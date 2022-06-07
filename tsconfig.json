@@ -11,9 +11,17 @@
         "paths": {
             "*": [
                 "node_modules/*"
-            ]
-        }
+            ],
+            
+            "@/access/*": ["src/data_access/*"],
+            "@/routers/*": ["src/routers/*"], 
+            "@/models/*": ["src/models/*"],
+            "@/schema": ["src/schema.ts"],
+            "@/types": ["src/types"], 
+            "@/config": ["src/config"]
+        },
     },
+    
     "include": [
         "src/**/*"
     ]

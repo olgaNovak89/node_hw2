@@ -1,10 +1,11 @@
-import { User } from "./types";
-import { schemaUser } from "./schema";
+import { User } from "@/types";
+import { schemaUser } from "@/schema";
 import {v4 as uuid} from 'uuid';
 import express, { Request, Response, NextFunction } from 'express'
+import { port, usersSearchLimit } from "@/config";
 const app = express();
-const port = 3030;
-const usersSearchLimit = 5;
+
+
 app.use(express.json());
 
 const users: User[] = [];

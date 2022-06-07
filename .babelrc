@@ -5,5 +5,19 @@
           "node": "current"
         }
       }]
+    ],
+    "plugins": [
+      ["module-resolver", {
+        "root": ["./src"],
+        "alias": {
+          "@/access/*": ["data_access/*"],
+            "@/routers/*": ["routers/*"], 
+            "@/models/*": ["models/*"],
+            "@/*": ["/*"],
+            "@/schema": ["src/schema"],
+            "@/types": ["src/types"], 
+            "@/config": ["src/config"]
+        }
+      }]
     ]
 }
