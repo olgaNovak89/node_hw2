@@ -3,6 +3,7 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "target": "es6",
+        "resolveJsonModule": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
@@ -15,7 +16,7 @@
             
             "@/access/*": ["src/data_access/*"],
             "@/routers/*": ["src/routers/*"], 
-            "@/models/*": ["src/models/*"],
+            "@/models/*": ["src/server/models/*"],
             "@/schema": ["src/schema.ts"],
             "@/types": ["src/types"], 
             "@/config": ["src/config"]
