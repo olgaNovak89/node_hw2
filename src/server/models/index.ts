@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { Sequelize, DataTypes} from 'sequelize';
 const basename = path.basename(module.filename);
-const env = process.env.NODE_ENV || 'development';
+// @ts-ignore
+const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'development';
 // tslint-disable-next-line no-var-requires
 import allConfig from '../config/config.json';
 const config: any = allConfig[env];

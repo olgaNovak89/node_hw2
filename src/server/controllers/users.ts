@@ -1,5 +1,5 @@
 import UserModel from "../models/User";
-import {User as UserType } from '@/types';
+// import {User as UserType } from '@/types';
 import {v4 as uuid} from 'uuid';
 import { schemaUser } from "@/schema";
 import { Request, Response } from "express";
@@ -34,7 +34,7 @@ export default {
                     }}
                 }],
                 subQuery: true,
-                limit: parseInt(req.query?.limit?.toString()) || usersSearchLimit
+                limit: parseInt(req.query?.limit?.toString(), 1) || usersSearchLimit
             })
             .then(users => {
                 if(users.length){
@@ -58,6 +58,8 @@ export default {
                 }],
             })
             .then(user => {
+                console.log(user)
+                // @ts-ignore
                 if (!user || user?.isDeleted) {
                     return res.status(404).send({
                         message: 'User Not Found',
@@ -78,9 +80,11 @@ export default {
                 }],
             })
             .then(user => {
+                                // @ts-ignore
+
                 if (!user || user.isDeleted) {
                     return res.status(404).send({
-                        message: 'Todo Not Found',
+                        message: 'User Not Found',
                     });
                 }
                 const userData = req.body;
@@ -114,9 +118,11 @@ export default {
                 }],
             })
             .then(user => {
+                                // @ts-ignore
+
                 if (!user || user.isDeleted) {
                     return res.status(404).send({
-                        message: 'Todo Not Found',
+                        message: 'User Not Found',
                     });
                 }
                 const userData = req.body;

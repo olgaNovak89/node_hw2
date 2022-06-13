@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
  import app from '../index';
- const debug = require('debug')('app-express:server');
+ import debugModule from 'debug';
+ const debug = debugModule('app-express:server');
  import http from 'http';
 
  const port = normalizePort(process.env.PORT || '3000');
