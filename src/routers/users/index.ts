@@ -1,8 +1,6 @@
-import express, { Request, Response, NextFunction } from 'express'
-import { User } from "@/types";
-import { schemaUser } from "@/schema";
+import express from 'express'
 
-import controllers from "../../server/controllers";
+import controllers from "../../server/controllers/index.js";
 
 const router = express.Router();
 const userController = controllers.users;

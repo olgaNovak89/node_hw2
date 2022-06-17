@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import {User} from '@/types'
+import { User } from './types';
 
 export const schemaUser = Joi.object<User>({
     id: Joi.string().required(),

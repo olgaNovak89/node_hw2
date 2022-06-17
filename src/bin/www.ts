@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+ import 'module-alias';
 
- import app from '../index';
  import debugModule from 'debug';
  const debug = debugModule('app-express:server');
  import http from 'http';
+ import app from '../index.js';
 
  const port = normalizePort(process.env.PORT || '3000');
  app.set('port', port);
@@ -56,7 +57,7 @@
    const addr = server.address();
    const bind = typeof addr === 'string'
        ? 'pipe ' + addr
-       : 'port ' + addr.port;
+       : 'port ' + addr?.port || '';
    debug('Listening on ' + bind);
  }
 
@@ -74,3 +75,4 @@
 
 
  runApp(port);
+export default server

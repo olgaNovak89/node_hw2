@@ -1,10 +1,11 @@
-import UserModel from "../models/User";
+import UserModel from "../models/User.js";
 // import {User as UserType } from '@/types';
 import {v4 as uuid} from 'uuid';
-import { schemaUser } from "@/schema";
 import { Request, Response } from "express";
-import { usersSearchLimit } from "@/config";
 import { Op } from "sequelize";
+import { usersSearchLimit } from "../../config.js";
+import { schemaUser } from "../../schema.js";
+
 
 export default {
     async create(req: Request, res: Response): Promise<any> {
@@ -34,7 +35,7 @@ export default {
                     }}
                 }],
                 subQuery: true,
-                limit: parseInt(req.query?.limit?.toString(), 1) || usersSearchLimit
+                limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit
             })
             .then(users => {
                 if(users.length){

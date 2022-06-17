@@ -1,5 +1,5 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
-import db from '../models'
+import db from '../models/index.js'
 const { sequelize } = db;
   class UserModel extends Model {
 

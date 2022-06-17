@@ -5,11 +5,11 @@ const basename = path.basename(module.filename);
 // @ts-ignore
 const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'development';
 // tslint-disable-next-line no-var-requires
-import allConfig from '../config/config.json';
+import allConfig from '../config/config.js';
 const config: any = allConfig[env];
 const db: any = {};
 
-const sequelize = config.use_env_variable ? new Sequelize(process.env[config.use_env_variable]) : new Sequelize(
+const sequelize = config.use_env_variable ? new Sequelize(process.env[config.use_env_variable] || '') : new Sequelize(
       config.database, config.username, config.password, config
   );
 
