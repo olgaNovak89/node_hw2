@@ -4,13 +4,14 @@
  import debugModule from 'debug';
  const debug = debugModule('app-express:server');
  import http from 'http';
- import app from '../index.js';
-
+ import express from 'express';
+//  import app from '../index';
+const app = express();
  const port = normalizePort(process.env.PORT || '3000');
  app.set('port', port);
 
  const server = http.createServer(app);
-
+  app.get('/', (req, res) => {res.json({message: 'hello'})})
  function normalizePort(val: string): number {
    const portNorm = parseInt(val, 10);
    const defaultPort = 3000;
