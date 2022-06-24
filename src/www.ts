@@ -1,30 +1,15 @@
 #!/usr/bin/env node
- import 'module-alias';
-
+ import * as alias from 'module-alias/register';
  import debugModule from 'debug';
  const debug = debugModule('app-express:server');
- import http from 'http';
- import express from 'express';
-//  import app from '../index';
-const app = express();
- const port = normalizePort(process.env.PORT || '3000');
+ import * as http from 'http';
+ import app from './index';
+ import * as dotenv from 'dotenv';
+ dotenv.config();
+ const port = parseInt(process.env.PORT || '3007', 1);
  app.set('port', port);
 
  const server = http.createServer(app);
-  app.get('/', (req, res) => {res.json({message: 'hello'})})
- function normalizePort(val: string): number {
-   const portNorm = parseInt(val, 10);
-   const defaultPort = 3000;
-   if (isNaN(portNorm)) {
-     return defaultPort;
-   }
-
-   if (portNorm >= 0) {
-     return portNorm;
-   }
-
-   return defaultPort;
- }
 
  function onError(error: any) {
    if (error.syscall !== 'listen') {
@@ -55,11 +40,12 @@ const app = express();
   */
 
  function onListening() {
-   const addr = server.address();
-   const bind = typeof addr === 'string'
+  console.log('listening on port ' + port)
+  const addr = server.address();
+  const bind = typeof addr === 'string'
        ? 'pipe ' + addr
        : 'port ' + addr?.port || '';
-   debug('Listening on ' + bind);
+  debug('Listening on ' + bind);
  }
 
 
@@ -76,4 +62,4 @@ const app = express();
 
 
  runApp(port);
-export default server
+ export default server

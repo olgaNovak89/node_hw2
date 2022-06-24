@@ -1,6 +1,6 @@
-import express from 'express'
+import * as express from 'express'
 
-import controllers from "../../server/controllers/index.js";
+import controllers from '../../server/controllers';
 
 const router = express.Router();
 const userController = controllers.users;

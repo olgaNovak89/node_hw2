@@ -1,30 +1,31 @@
 {
+    "compileOnSave": false,
     "compilerOptions": {
-        "module": "ESNext",
-        "esModuleInterop": true,
-        "target": "es2016",
-        "moduleResolution": "Node",
-        "outDir": "dist",
-        "forceConsistentCasingInFileNames": true,
-        "noFallthroughCasesInSwitch": true,
-        "strict": true,
-        "noImplicitAny": true,
-        "useUnknownInCatchVariables": false,
-        "inlineSourceMap": true,
-        "baseUrl": "./src",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "es5",
+        "types": ["node"],
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "lib": [
+            "es2016",
+            "ESNext.BigInt",
+            "dom",
+            "esnext.asynciterable"
+        ],
+        "baseUrl": "src", 
         "paths": {
-            "@/routers/*": ["routers/*"],
-            "@/server/*": ["server/*"],
-            "@/app/*": ["*"],
-            "@/app": ["index.ts"]
+            "@/routers/*" :["routers/*"],
+            "@/models/*" :["server/models/*"],
+            "@/migrations/*" :["server/migrations/*"],
+            "@/controllers/*" :["server/controllers/*"],
+            "@/config/*" :["server/config/*"],
+            "@/types": ["types"],
+            "@/schema": ["schema"]
         }
-      },
-      "ts-node": {
-          "esm": true
-      },
-      "lib": ["esnext"],
-    
-    "include": [
-        "src/**/*"
-    ]
+    }
 }

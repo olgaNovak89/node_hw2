@@ -1,10 +1,10 @@
-import UserModel from "../models/User.js";
+import UserModel from '../models/User.js';
 // import {User as UserType } from '@/types';
 import {v4 as uuid} from 'uuid';
-import { Request, Response } from "express";
-import { Op } from "sequelize";
-import { usersSearchLimit } from "../../config.js";
-import { schemaUser } from "../../schema.js";
+import { Request, Response } from 'express';
+import { Op } from 'sequelize';
+import { usersSearchLimit } from '../../config.js';
+import { schemaUser } from '../../schema.js';
 
 
 export default {
@@ -13,7 +13,7 @@ export default {
         const validatedData = schemaUser.validate({...userData,
             id: uuid(),
             isDeleted: false}, { abortEarly: false });
-        if (validatedData.error){
+        if (validatedData.error) {
             res.status(400).send(validatedData.error);
         } else {
             return UserModel
@@ -24,6 +24,7 @@ export default {
     },
 
     async list(req: Request, res: Response): Promise<any> {
+        console.log(req)
         const {login} = req.query;
         return UserModel
             .findAll({
@@ -31,17 +32,16 @@ export default {
                     model: UserModel,
                     as: 'Users',
                     where: { login: {
-                        [Op.like]: `%${login}`
-                    }}
+                        [Op.like]: `%${login}`,
+                    }},
                 }],
                 subQuery: true,
-                limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit
+                limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit,
             })
             .then(users => {
-                if(users.length){
+                if (users.length) {
                     res.status(200).json(users)
-                }
-                else {
+                } else {
                     const message = `User with login similar to ${login} not found`;
                     res.status(404).json({message});
                 }
@@ -90,17 +90,17 @@ export default {
                 }
                 const userData = req.body;
                 const validatedData = schemaUser.validate({...user,
-                    ...userData
+                    ...userData,
                 }, { abortEarly: false });
-                if (validatedData.error){
+                if (validatedData.error) {
                     return res.status(404).json(validatedData.error);
                 } else {
 
                 return UserModel
                     .update(validatedData.value, {
                         where: {
-                          id: user_id
-                        }
+                          id: user_id,
+                        },
                       })
                     .then(() => res.status(200).json(validatedData.value))
                     .catch((error) => res.status(400).send(error));
@@ -128,17 +128,17 @@ export default {
                 }
                 const userData = req.body;
                 const validatedData = schemaUser.validate({...user,
-                    isDeleted: true
+                    isDeleted: true,
                 }, { abortEarly: false });
-                if (validatedData.error){
+                if (validatedData.error) {
                     return res.status(404).json(validatedData.error);
                 } else {
 
                 return UserModel
                     .update(validatedData.value, {
                         where: {
-                          id: user_id
-                        }
+                          id: user_id,
+                        },
                       })
                     .then(() => res.status(200).json(validatedData.value))
                     .catch((error) => res.status(400).send(error));

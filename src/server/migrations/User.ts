@@ -1,18 +1,18 @@
 'use strict';
 
-import { DataTypes, QueryInterface } from "sequelize/types";
+import { DataTypes, QueryInterface } from 'sequelize/types';
 
 export default {
   up: async (queryInterface: QueryInterface): Promise<void> => {
-    await queryInterface.createTable('Users',{
+    await queryInterface.createTable('Users', {
         id: {type: DataTypes.STRING, allowNull: false, primaryKey: true},
         login: {type: DataTypes.STRING, allowNull: false},
         password: {type: DataTypes.STRING, allowNull: false},
         age: DataTypes.INTEGER,
-        isDeleted: DataTypes.BOOLEAN
+        isDeleted: DataTypes.BOOLEAN,
       });
   },
   down: async (queryInterface: QueryInterface) => {
     await queryInterface.dropTable('Users');
-  }
+  },
 };

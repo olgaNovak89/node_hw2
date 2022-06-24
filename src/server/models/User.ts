@@ -1,17 +1,17 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import db from '../models/index.js'
 const { sequelize } = db;
-  class UserModel extends Model {
+class UserModel extends Model {
 
   }
-  UserModel.init({
+UserModel.init({
       id: {type: DataTypes.STRING, allowNull: false, primaryKey: true},
       login: {type: DataTypes.STRING, allowNull: false},
       password: {type: DataTypes.STRING, allowNull: false},
       age: DataTypes.INTEGER,
-      isDeleted: DataTypes.BOOLEAN
+      isDeleted: DataTypes.BOOLEAN,
     }, {
       sequelize,
-      modelName: 'User'
+      modelName: 'User',
   });
 export default UserModel

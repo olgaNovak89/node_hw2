@@ -1,12 +1,12 @@
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
-import logger from 'morgan';
+import * as express from 'express';
+import * as path from 'path';
+import * as cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
+import * as logger from 'morgan';
 
-import usersRouter from './routers/users';
+import * as usersRouter from '@/routers/users';
 
-const app = express();
+export const app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -14,6 +14,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', usersRouter);
+app.use('/users', usersRouter.default);
 
 export default app;

@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import { User } from './types';
+import * as Joi from 'joi';
+import { User } from '@/types';
 
 export const schemaUser = Joi.object<User>({
     id: Joi.string().required(),
@@ -9,6 +9,6 @@ export const schemaUser = Joi.object<User>({
     .integer()
     .min(4)
     .max(130).required(),
-    isDeleted: Joi.boolean()
+    isDeleted: Joi.boolean(),
 })
 ;

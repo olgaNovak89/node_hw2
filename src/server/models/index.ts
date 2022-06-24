@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { Sequelize, DataTypes} from 'sequelize';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as sequelizeM from 'sequelize';
 const basename = path.basename(module.filename);
 // @ts-ignore
 const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'development';
@@ -9,8 +9,8 @@ import allConfig from '../config/config.js';
 const config: any = allConfig[env];
 const db: any = {};
 
-const sequelize = config.use_env_variable ? new Sequelize(process.env[config.use_env_variable] || '') : new Sequelize(
-      config.database, config.username, config.password, config
+const sequelize = config.use_env_variable ? new sequelizeM.Sequelize(process.env[config.use_env_variable] || '') : new sequelizeM.Sequelize(
+      config.database, config.username, config.password, config,
   );
 
 fs.readdirSync(__dirname)
@@ -19,7 +19,7 @@ fs.readdirSync(__dirname)
         (file !== basename) &&
         (file.slice(-3) === '.js'))
     .forEach(file => {
-      const model = require(path.join(__dirname, file))(sequelize, DataTypes)
+      const model = require(path.join(__dirname, file))
       db[model.name] = model;
     });
 
@@ -30,6 +30,6 @@ Object.keys(db).forEach(modelName => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+db.Sequelize = sequelizeM.Sequelize;
 
 export default db;
