@@ -5,17 +5,18 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc -p src",
-    "start": "npm run build && concurrently --kill-others \"tsc -w -p src\" \"nodemon dist/www.js -e ts\"",
+    "start": "npm run build && concurrently --kill-others \"tsc -w -p src\" \"nodemon --require ts-node/register --require tsconfig-paths/register dist/www.js -e ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "_moduleAlias": {
-    "@/routers/*": "dist/routers/*",
-    "@/models/*": "dist/server/models/*",
-    "@/migrations/*": "dist/server/migrations/*",
-    "@/controllers/*": "dist/server/controllers/*",
-    "@/config/*": "dist/server/config/*",
-    "@/types": "dist/types",
-    "@/schema": "dist/schema"
+  "moduleNameMapper": {
+    "^@/routers/(.*)": "<rootDir>/dist/routers/*",
+    "^@/models/(.*)": "<rootDir>/dist/server/models/*",
+    "^@/migrations/(.*)": "<rootDir>/dist/server/migrations/*",
+    "^@/controllers/(.*)": "<rootDir>/dist/server/controllers/*",
+    "^@/config/(.*)": "<rootDir>/dist/server/config/*",
+    "^@/types": "<rootDir>/dist/types",
+    "^@/schema": "<rootDir>/dist/schema",
+    "^@/config": "<rootDir>/dist/config"
   },
   "_moduleDirectories": [
     "dist"
@@ -52,6 +53,7 @@
     "nodemon": "^2.0.16",
     "prettier": "^2.7.1",
     "ts-node": "^10.8.1",
+    "tsconfig-paths": "^4.0.0",
     "tslint": "^6.1.3",
     "typescript": "^4.6.4"
   },

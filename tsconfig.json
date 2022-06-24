@@ -25,7 +25,8 @@
             "@/controllers/*" :["server/controllers/*"],
             "@/config/*" :["server/config/*"],
             "@/types": ["types"],
-            "@/schema": ["schema"]
+            "@/schema": ["schema"],
+            "@/config" :["config"],
         }
     }
 }

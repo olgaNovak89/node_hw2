@@ -1,10 +1,10 @@
-import UserModel from '../models/User.js';
+import UserModel from '@/models/User';
 // import {User as UserType } from '@/types';
 import {v4 as uuid} from 'uuid';
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
-import { usersSearchLimit } from '../../config.js';
-import { schemaUser } from '../../schema.js';
+import { usersSearchLimit } from '@/config';
+import { schemaUser } from '@/schema';
 
 
 export default {

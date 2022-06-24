@@ -1,17 +1,18 @@
 #!/usr/bin/env node
- import * as alias from 'module-alias/register';
- import debugModule from 'debug';
- const debug = debugModule('app-express:server');
- import * as http from 'http';
- import app from './index';
- import * as dotenv from 'dotenv';
- dotenv.config();
- const port = parseInt(process.env.PORT || '3007', 1);
- app.set('port', port);
+import 'module-alias/register';
+import debugModule from 'debug';
+const debug = debugModule('app-express:server');
+import * as http from 'http';
+import app from './index';
+import * as dotenv from 'dotenv';
+dotenv.config();
+const port = parseInt(process.env.PORT || '3007');
+console.log(port, typeof process.env.PORT || '3007', parseInt(process.env.PORT || '3007'))
+app.set('port', port);
 
- const server = http.createServer(app);
+const server = http.createServer(app);
 
- function onError(error: any) {
+function onError(error: any) {
    if (error.syscall !== 'listen') {
      throw error;
    }
@@ -39,7 +40,7 @@
   * Event listener for HTTP server "listening" event.
   */
 
- function onListening() {
+function onListening() {
   console.log('listening on port ' + port)
   const addr = server.address();
   const bind = typeof addr === 'string'
@@ -49,17 +50,17 @@
  }
 
 
- function runApp(portRun: number) {
+function runApp(portRun: number) {
 
-
+  console.log(portRun)
    /**
     * Listen on provided port, on all network interfaces.
     */
-   server.listen(portRun);
-   server.on('error', onError);
-   server.on('listening', onListening);
+  server.listen(portRun);
+  server.on('error', onError);
+  server.on('listening', onListening);
  }
 
 
- runApp(port);
- export default server
+runApp(port);
+export default server

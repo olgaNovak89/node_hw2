@@ -1,3 +1,6 @@
 {
-  "ignore": ["dist/**/*.js"]
+  "ignore": ["dist/**/*.js"],
+  "execMap": {
+    "ts": "node --require ts-node/register --require tsconfig-paths/register"
+  }
 }
