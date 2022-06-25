@@ -1,5 +1,4 @@
 import UserModel from '@/models/User';
-// import {User as UserType } from '@/types';
 import {v4 as uuid} from 'uuid';
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
@@ -7,19 +6,20 @@ import { usersSearchLimit } from '@/config';
 import { schemaUser } from '@/schema';
 
 
-export default {
+export const users =  {
     async create(req: Request, res: Response): Promise<any> {
         const userData = req.body;
         const validatedData = schemaUser.validate({...userData,
             id: uuid(),
             isDeleted: false}, { abortEarly: false });
         if (validatedData.error) {
+            console.log('here')
             res.status(400).send(validatedData.error);
         } else {
             return UserModel
             .create(validatedData)
             .then(user => res.status(201).send({message: 'New user is created', user}))
-            .catch(error => res.status(400).send(error));
+            .catch(error => res.status(400).send({error}));
         }
     },
 
@@ -38,9 +38,9 @@ export default {
                 subQuery: true,
                 limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit,
             })
-            .then(users => {
-                if (users.length) {
-                    res.status(200).json(users)
+            .then((usersFound: UserModel[]) => {
+                if (usersFound.length) {
+                    res.status(200).json(usersFound)
                 } else {
                     const message = `User with login similar to ${login} not found`;
                     res.status(404).json({message});

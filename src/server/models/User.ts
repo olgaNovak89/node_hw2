@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import db from '@/models/index'
 const { sequelize } = db;
 class UserModel extends Model {

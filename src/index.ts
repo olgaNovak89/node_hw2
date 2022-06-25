@@ -4,7 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
 
-import * as usersRouter from '@/routers/users';
+import usersRouter from '@/routers/users';
 
 export const app = express();
 
@@ -14,6 +14,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', usersRouter.default);
+app.use('/user', usersRouter);
 
 export default app;

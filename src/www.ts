@@ -6,8 +6,7 @@ import * as http from 'http';
 import app from './index';
 import * as dotenv from 'dotenv';
 dotenv.config();
-const port = parseInt(process.env.PORT || '3007');
-console.log(port, typeof process.env.PORT || '3007', parseInt(process.env.PORT || '3007'))
+const port = +(process.env.PORT || '3007');
 app.set('port', port);
 
 const server = http.createServer(app);

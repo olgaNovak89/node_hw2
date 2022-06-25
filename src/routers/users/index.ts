@@ -1,16 +1,18 @@
 import * as express from 'express'
 
-import controllers from '../../server/controllers';
+import * as controllers from '@/controllers';
 
 const router = express.Router();
 const userController = controllers.users;
 
-router.get('/user/:user_id',  userController.retrieve);
-router.get('/user',  userController.list);
 
-router.delete('/user/:user_id',  userController.destroy);
-
-router.put('/user/:user_id', userController.update);
-
-router.post('/user', userController.create);
+router.use((req, res, next) => {
+    console.log('Time: ', Date.now())
+    next()
+  })
+router.get('/:user_id',  userController.retrieve);
+router.get('/', userController.list);
+router.delete('/:user_id',  userController.destroy);
+router.put('/:user_id', userController.update);
+router.post('/', userController.create);
 export default router
