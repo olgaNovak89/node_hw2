@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sequelizeM from 'sequelize';
+import { Sequelize } from 'sequelize-typescript';
 const basename = path.basename(module.filename);
 // @ts-ignore
 const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'development';
@@ -9,7 +9,7 @@ import allConfig from '@/config/config';
 const config: any = allConfig[env];
 const db: any = {};
 
-const sequelize = config.use_env_variable ? new sequelizeM.Sequelize(process.env[config.use_env_variable] || '') : new sequelizeM.Sequelize(
+const sequelize = config.use_env_variable ? new Sequelize(process.env[config.use_env_variable] || '') : new Sequelize(
       config.database, config.username, config.password, config,
   );
 
@@ -30,5 +30,5 @@ Object.keys(db).forEach(modelName => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize = sequelizeM.Sequelize;
+db.Sequelize = Sequelize;
 export default db;
