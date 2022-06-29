@@ -1,6 +1,6 @@
 export default {
     development: {
-      username: 'root',
+      username: 'postgres',
       password: 'qwerty',
       database: 'homework2',
       host: '127.0.0.1',
