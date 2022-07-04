@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
-
+import '@/models/index';
 import usersRouter from '@/routers/users';
 
 export const app = express();

@@ -1,11 +1,8 @@
 import * as express from 'express'
 
 import * as controllers from '@/controllers';
-console.log('import user router')
 const router = express.Router();
 const userController = controllers.users;
-
-
 router.use((req, res, next) => {
     console.log('Time: ', Date.now(), req, res)
     next()

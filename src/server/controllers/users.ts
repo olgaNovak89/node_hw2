@@ -5,27 +5,25 @@ import { Op } from 'sequelize';
 import { usersSearchLimit } from '@/config';
 import { schemaUser } from '@/schema';
 
-
 export const users =  {
     async create(req: Request, res: Response): Promise<any> {
-        console.log(req);
         const userData = req.body;
         const validatedData = schemaUser.validate({...userData,
             id: uuid(),
             isDeleted: false}, { abortEarly: false });
+        console.log(validatedData);    
         if (validatedData.error) {
-            console.log('here')
-            res.status(400).send(validatedData.error);
+            res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {
+            console.log('valid, ', validatedData.value, typeof validatedData)
             return UserModel
-            .create(validatedData)
+            .create(validatedData.value)
             .then(user => res.status(201).send({message: 'New user is created', user}))
-            .catch(error => res.status(400).send({error}));
+            .catch(error => res.status(400).send({error:  typeof validatedData}));
         }
     },
 
     async list(req: Request, res: Response): Promise<any> {
-        console.log(req)
         const {login} = req.query;
         return UserModel
             .findAll({
@@ -60,7 +58,6 @@ export const users =  {
                 }],
             })
             .then(user => {
-                console.log(user)
                 // @ts-ignore
                 if (!user || user?.isDeleted) {
                     return res.status(404).send({
