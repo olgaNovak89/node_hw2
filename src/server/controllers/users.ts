@@ -8,6 +8,7 @@ import { schemaUser } from '@/schema';
 
 export const users =  {
     async create(req: Request, res: Response): Promise<any> {
+        console.log(req);
         const userData = req.body;
         const validatedData = schemaUser.validate({...userData,
             id: uuid(),
