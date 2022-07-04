@@ -11,7 +11,7 @@ export const users =  {
         const validatedData = schemaUser.validate({...userData,
             id: uuid(),
             isDeleted: false}, { abortEarly: false });
-        console.log(validatedData);    
+        console.log(validatedData);
         if (validatedData.error) {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {

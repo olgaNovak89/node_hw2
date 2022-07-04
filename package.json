@@ -5,6 +5,7 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc -p src",
+    "migrate": "npx sequelize-cli db:migrate",
     "start": "npm run build && concurrently --kill-others \"tsc -w -p src\" \"nodemon --require ts-node/register --require tsconfig-paths/register dist/www.js -e ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

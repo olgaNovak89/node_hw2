@@ -13,7 +13,10 @@ const db: any = {};
 const sequelize = config.use_env_variable ?
   new Sequelize(process.env[config.use_env_variable] || '') :
   new Sequelize(
-      config.database, config.username, config.password, config
+      config.database, config.username, config.password, {
+        host: '127.0.0.1',
+        dialect: 'postgres',
+      },
   );
 
 sequelize.addModels([User]);
