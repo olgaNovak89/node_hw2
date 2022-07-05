@@ -1,4 +1,4 @@
-import UserModel from '@/models/User';
+import Users from '@/models/User';
 import {v4 as uuid} from 'uuid';
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
@@ -11,24 +11,22 @@ export const users =  {
         const validatedData = schemaUser.validate({...userData,
             id: uuid(),
             isDeleted: false}, { abortEarly: false });
-        console.log(validatedData);
         if (validatedData.error) {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {
-            console.log('valid, ', validatedData.value, typeof validatedData)
-            return UserModel
+            return Users
             .create(validatedData.value)
             .then(user => res.status(201).send({message: 'New user is created', user}))
-            .catch(error => res.status(400).send({error:  typeof validatedData}));
+            .catch(error => res.status(400).send({error: {user: validatedData.value, message: 'Error happened'}}));
         }
     },
 
     async list(req: Request, res: Response): Promise<any> {
         const {login} = req.query;
-        return UserModel
+        return Users
             .findAll({
                 include: [{
-                    model: UserModel,
+                    model: Users,
                     as: 'Users',
                     where: { login: {
                         [Op.like]: `%${login}`,
@@ -37,7 +35,7 @@ export const users =  {
                 subQuery: true,
                 limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit,
             })
-            .then((usersFound: UserModel[]) => {
+            .then((usersFound: Users[]) => {
                 if (usersFound.length) {
                     res.status(200).json(usersFound)
                 } else {
@@ -50,10 +48,10 @@ export const users =  {
 
     retrieve(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
-        return UserModel
+        return Users
             .findByPk(user_id, {
                 include: [{
-                    model: UserModel,
+                    model: Users,
                     as: 'User',
                 }],
             })
@@ -71,10 +69,10 @@ export const users =  {
 
     async update(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
-        return UserModel
+        return Users
             .findByPk(user_id, {
                 include: [{
-                    model: UserModel,
+                    model: Users,
                     as: 'User',
                 }],
             })
@@ -94,7 +92,7 @@ export const users =  {
                     return res.status(404).json(validatedData.error);
                 } else {
 
-                return UserModel
+                return Users
                     .update(validatedData.value, {
                         where: {
                           id: user_id,
@@ -109,11 +107,11 @@ export const users =  {
 
     async destroy(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
-        return UserModel
+        return Users
             .findByPk(user_id, {
                 include: [{
-                    model: UserModel,
-                    as: 'User',
+                    model: Users,
+                    as: 'Users',
                 }],
             })
             .then(user => {
@@ -132,7 +130,7 @@ export const users =  {
                     return res.status(404).json(validatedData.error);
                 } else {
 
-                return UserModel
+                return Users
                     .update(validatedData.value, {
                         where: {
                           id: user_id,

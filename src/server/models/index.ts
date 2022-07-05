@@ -5,7 +5,7 @@ const basename = path.basename(module.filename);
 const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'development';
 // tslint-disable-next-line no-var-requires
 import allConfig from '@/config/config';
-import User from '@/models/User'
+import Users from '@/models/User'
 
 const config: any = allConfig[env];
 
@@ -19,9 +19,19 @@ const sequelize = config.use_env_variable ?
       },
   );
 
-sequelize.addModels([User]);
-sequelize.authenticate().then(function(errors) { console.log(errors) });
-
+sequelize.addModels([Users]);
+sequelize.authenticate()
+  .then((/* err */) => {
+    console.log('----------------------------------------')
+    console.log('DATABASE √')
+    console.log('    HOST     %s', config.host)
+    console.log('    PORT     %s', config.port)
+    console.log('    DATABASE %s', config.database)
+    console.log('----------------------------------------')
+  })
+  .catch(err => {
+    console.log('Unable to connect to the database:', err)
+  })
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 export default db;

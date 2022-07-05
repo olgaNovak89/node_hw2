@@ -1,6 +1,6 @@
 'use strict';
 
-import { DataTypes, QueryInterface } from 'sequelize/types';
+import { DataTypes, QueryInterface } from 'sequelize';
 
 export default {
   up: async (queryInterface: QueryInterface): Promise<void> => {

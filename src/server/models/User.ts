@@ -1,7 +1,7 @@
 // import { Model, DataTypes } from 'sequelize';
 import { Table, Column, Model, DataType } from 'sequelize-typescript'
 @Table
-class User extends Model<User> {
+class Users extends Model<Users> {
   @Column({type: DataType.STRING, allowNull: false, primaryKey: true})
   id: string;
   @Column({type: DataType.STRING, allowNull: false})
@@ -13,4 +13,4 @@ class User extends Model<User> {
   @Column(DataType.BOOLEAN)
   isDeleted: boolean
 }
-export default User
+export default Users

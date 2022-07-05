@@ -5,7 +5,7 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc -p src",
-    "migrate": "npx sequelize-cli db:migrate",
+    "migrate": "npm run build && npx sequelize-cli-typescript db:migrate",
     "start": "npm run build && concurrently --kill-others \"tsc -w -p src\" \"nodemon --require ts-node/register --require tsconfig-paths/register dist/www.js -e ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -43,6 +43,7 @@
     "@types/module-alias": "^2.0.1",
     "@types/morgan": "^1.9.3",
     "@types/node": "^17.0.45",
+    "@types/sequelize": "^4.28.13",
     "@types/uuid": "^8.3.4",
     "@types/validator": "^13.7.3",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
