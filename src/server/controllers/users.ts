@@ -8,16 +8,14 @@ import { schemaUser } from '@/schema';
 export const users =  {
     async create(req: Request, res: Response): Promise<any> {
         const userData = req.body;
-        const validatedData = schemaUser.validate({...userData,
-            id: uuid(),
-            isDeleted: false}, { abortEarly: false });
+        const validatedData = schemaUser.validate({...userData }, { abortEarly: false });
         if (validatedData.error) {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {
             return Users
             .create(validatedData.value)
             .then(user => res.status(201).send({message: 'New user is created', user}))
-            .catch(error => res.status(400).send({error: {user: validatedData.value, message: 'Error happened'}}));
+            .catch(error => res.status(400).send({error: {user: validatedData.value, message: 'Error happened', ...error}}));
         }
     },
 

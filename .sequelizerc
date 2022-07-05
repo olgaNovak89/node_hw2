@@ -4,6 +4,6 @@ module.exports = {
   "config": allConfigs[process.env.NODE_ENV],
   "models-path": path.resolve('./dist/server/models'),
   "seeders-path": path.resolve('./dist/server/seeders'),
-  'migrations-source-path': path.resolve('./src/server/migrations'),
-  'migrations-compiled-path': path.resolve('./dist/server/migrations')
+  // 'migrations-source-path': path.resolve('./src/server/migrations'),
+  'migrations-path': path.resolve('./dist/server/migrations')
 };
