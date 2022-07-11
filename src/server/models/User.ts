@@ -1,5 +1,5 @@
-// import { Model, DataTypes } from 'sequelize';
 import { Table, Column, Model, DataType } from 'sequelize-typescript'
+import { v4 as uuid } from 'uuid';
 @Table
 class Users extends Model<Users> {
   @Column({type: DataType.UUIDV4, allowNull: false, primaryKey: true})
@@ -13,4 +13,7 @@ class Users extends Model<Users> {
   @Column(DataType.BOOLEAN)
   isDeleted: boolean
 }
+Users.addHook('beforeSave', (user) => {
+  user['id'] = uuid();
+});
 export default Users
