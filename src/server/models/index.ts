@@ -20,6 +20,8 @@ const sequelize = config.use_env_variable ?
   );
 
 sequelize.addModels([Users]);
+sequelize
+console.log(Users.isInitialized)
 sequelize.authenticate()
   .then((/* err */) => {
     console.log('----------------------------------------')
