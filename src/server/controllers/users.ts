@@ -1,5 +1,4 @@
 import Users from '@/models/User';
-import {v4 as uuid} from 'uuid';
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import { usersSearchLimit } from '@/config';
