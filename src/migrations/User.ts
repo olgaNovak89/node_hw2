@@ -10,7 +10,7 @@ export default {
           // autoIncrement: true,
           primaryKey: true,
           type: DataTypes.UUID,
-          defaultValue: UUIDV4
+          defaultValue: UUIDV4,
         },
         login: {
           type: DataTypes.STRING,

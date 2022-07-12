@@ -3,12 +3,12 @@ import { User } from '@/types';
 
 export const schemaUser = Joi.object<User>({
     // id: Joi.string().required(),
-    login: Joi.string().required(),
-    password: Joi.string().alphanum().required(),
+    login: Joi.string().required().allow(null),
+    password: Joi.string().alphanum().required().allow(null),
     age: Joi.number()
     .integer()
     .min(4)
-    .max(130).required(),
-    isDeleted: Joi.boolean(),
+    .max(130).required().allow(null),
+    isDeleted: Joi.boolean().allow(null),
 })
 ;

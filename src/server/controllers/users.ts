@@ -67,24 +67,16 @@ export const users =  {
     async update(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
         return Users
-            .findByPk(user_id, {
-                include: [{
-                    model: Users,
-                    as: 'User',
-                }],
-            })
+            .findOne({where: {id: user_id}})
             .then(user => {
-                                // @ts-ignore
-
                 if (!user || user.isDeleted) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
                 const userData = req.body;
-                const validatedData = schemaUser.validate({...user,
-                    ...userData,
-                }, { abortEarly: false });
+                const validatedData = schemaUser.validate(userData
+                , { abortEarly: false });
                 if (validatedData.error) {
                     return res.status(404).json(validatedData.error);
                 } else {
@@ -105,37 +97,20 @@ export const users =  {
     async destroy(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
         return Users
-            .findByPk(user_id, {
-                include: [{
-                    model: Users,
-                    as: 'Users',
-                }],
-            })
+        .findOne({where: {id: user_id}})
             .then(user => {
-                                // @ts-ignore
-
                 if (!user || user.isDeleted) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
-                const userData = req.body;
-                const validatedData = schemaUser.validate({...user,
-                    isDeleted: true,
-                }, { abortEarly: false });
-                if (validatedData.error) {
-                    return res.status(404).json(validatedData.error);
-                } else {
-
                 return Users
-                    .update(validatedData.value, {
-                        where: {
+                    .update({isDeleted: true},
+                        {where: {
                           id: user_id,
-                        },
-                      })
-                    .then(() => res.status(200).json(validatedData.value))
+                        }}, )
+                    .then(() => res.status(200).json({message: `User ${user_id} is deleted` }))
                     .catch((error) => res.status(400).send(error));
-                }
             })
             .catch((error) => res.status(400).send(error));
     },
