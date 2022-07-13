@@ -1,4 +1,4 @@
-import Users from '@/models/User';
+import Users from '@/models/User.model';
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import { usersSearchLimit } from '@/config';

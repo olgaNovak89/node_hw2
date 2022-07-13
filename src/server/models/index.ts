@@ -5,7 +5,7 @@ const basename = path.basename(module.filename);
 const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'development';
 // tslint-disable-next-line no-var-requires
 import allConfig from '@/config/config';
-import Users from '@/models/User'
+import Users from '@/models/User.model'
 
 const config: any = allConfig[env];
 
