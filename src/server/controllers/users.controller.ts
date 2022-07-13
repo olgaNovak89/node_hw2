@@ -22,13 +22,13 @@ export const users =  {
         const {login} = req.query;
         return Users
             .findAll({
-                include: [{
-                    model: Users,
-                    as: 'Users',
+                
                     where: { login: {
-                        [Op.like]: `%${login}`,
-                    }},
-                }],
+                        [Op.like]: `%${login}%`,
+                        
+                    },
+                    isDeleted: false
+                },
                 subQuery: true,
                 limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit,
             })
@@ -45,13 +45,9 @@ export const users =  {
 
     retrieve(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
+
         return Users
-            .findByPk(user_id, {
-                include: [{
-                    model: Users,
-                    as: 'User',
-                }],
-            })
+            .findOne({where:{ id: user_id, isDeleted: false}})
             .then(user => {
                 // @ts-ignore
                 if (!user || user?.isDeleted) {
@@ -67,9 +63,9 @@ export const users =  {
     async update(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
         return Users
-            .findOne({where: {id: user_id}})
+            .findOne({where: {id: user_id, isDeleted: false}})
             .then(user => {
-                if (!user || user.isDeleted) {
+                if (!user) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
@@ -87,7 +83,7 @@ export const users =  {
                           id: user_id,
                         },
                       })
-                    .then(() => res.status(200).json(validatedData.value))
+                    .then(() => res.status(200).json({...user, ...validatedData.value}))
                     .catch((error) => res.status(400).send(error));
                 }
             })
