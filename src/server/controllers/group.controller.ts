@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { usersSearchLimit } from '@/config';
 import { schemaGroup } from '@/schema';
 import Group from '@/models/Group.model';
+import { GroupType } from '@/types';
 
 export const group =  {
     async create(req: Request, res: Response): Promise<any> {
@@ -22,10 +23,10 @@ export const group =  {
         const {name} = req.query;
         return Group
             .findAll({
-                where: { 
+                where: {
                     name: {
                         [Op.like]: `%${name}%`,
-                    }
+                    },
                 },
                 subQuery: true,
                 limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit,
@@ -45,7 +46,7 @@ export const group =  {
         const { group_id } = req.params;
 
         return Group
-            .findOne({where:{ id: group_id }})
+            .findOne({where: { id: group_id }})
             .then(user => {
                 // @ts-ignore
                 if (!user || user?.isDeleted) {
@@ -62,8 +63,8 @@ export const group =  {
         const { group_id } = req.params;
         return Group
             .findOne({where: {id: group_id }})
-            .then(group => {
-                if (!group) {
+            .then((groupFound: GroupType) => {
+                if (!groupFound) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
@@ -81,7 +82,7 @@ export const group =  {
                           id: group_id,
                         },
                       })
-                    .then(() => res.status(200).json({...group, ...validatedData.value}))
+                    .then(() => res.status(200).json({...groupFound, ...validatedData.value}))
                     .catch((error) => res.status(400).send(error));
                 }
             })
@@ -92,8 +93,8 @@ export const group =  {
         const { group_id } = req.params;
         return Group
         .destroy({where: {id: group_id}})
-        .then(group => res.status(200).json({message: `Group ${group_id} is deleted` }))
+        .then((code: number) => res.status(code).json({message: `Group ${group_id} is deleted`}))
         .catch((error) => res.status(400).send(error));
-            
+
     },
 };

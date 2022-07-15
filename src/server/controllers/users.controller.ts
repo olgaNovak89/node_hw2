@@ -22,12 +22,12 @@ export const users =  {
         const {login} = req.query;
         return Users
             .findAll({
-                
+
                     where: { login: {
                         [Op.like]: `%${login}%`,
-                        
+
                     },
-                    isDeleted: false
+                    isDeleted: false,
                 },
                 subQuery: true,
                 limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit,
@@ -47,7 +47,7 @@ export const users =  {
         const { user_id } = req.params;
 
         return Users
-            .findOne({where:{ id: user_id, isDeleted: false}})
+            .findOne({where: { id: user_id, isDeleted: false}})
             .then(user => {
                 // @ts-ignore
                 if (!user || user?.isDeleted) {

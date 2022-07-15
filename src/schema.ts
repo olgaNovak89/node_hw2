@@ -12,7 +12,9 @@ export const schemaUser = Joi.object<User>({
     .max(130).required().optional().allow(null),
     isDeleted: Joi.boolean().optional().allow(null),
 });
-export const schemaUGroup = Joi.object<Group>({
+export const schemaGroup = Joi.object<Group>({
     name: Joi.string().required().optional().allow(null),
-    permissions: Joi.custom((value) => value.every(permission => ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'].includes(permission)))
+    permissions: Joi.custom((value) => !!value.lenght &&
+    value.every(permission => ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES']
+    .includes(permission))),
 })

@@ -4,25 +4,23 @@ import { DataTypes, QueryInterface, UUIDV4 } from 'sequelize';
 
 export default {
   up: async (queryInterface: QueryInterface): Promise<void> => {
-    await queryInterface.createTable('Group', {
+    await queryInterface.createTable('UserToGroup', {
         id: {
-          allowNull: false,
-          // autoIncrement: true,
+          type: DataTypes.INTEGER,
           primaryKey: true,
-          type: DataTypes.UUID,
-          defaultValue: UUIDV4,
+          autoIncrement: true,
         },
-        name: {
-          type: DataTypes.STRING,
+        userId: {
+          type: DataTypes.UUIDV4,
           allowNull: false,
         },
-        permissions: {
-          type: DataTypes.ARRAY(DataTypes.STRING),
+        groupId: {
+          type: DataTypes.UUIDV4,
           allowNull: false,
         },
       });
   },
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.dropTable('Group');
+    await queryInterface.dropTable('UserToGroup');
   },
 };

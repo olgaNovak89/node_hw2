@@ -7,7 +7,7 @@ const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'deve
 import allConfig from '@/config/config';
 import Users from '@/models/User.model'
 import Group from '@/models/Group.model';
-import UserGroup from '@/models/UserGroup.model';
+import UserToGroup from '@/models/user_to_group.model';
 
 const config: any = allConfig[env];
 
@@ -21,7 +21,7 @@ const sequelize = config.use_env_variable ?
       },
   );
 
-sequelize.addModels([Users, Group, UserGroup]);
+sequelize.addModels([Users, Group, UserToGroup]);
 sequelize.authenticate()
   .then((/* err */) => {
     console.log('----------------------------------------')

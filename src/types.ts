@@ -8,7 +8,7 @@ export type User = {
 
 export type Permission = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_FILES';
 
-export type Group = {
+export type GroupType = {
     id: string;
     name: string;
     permissions: Permission[]
