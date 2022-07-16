@@ -1,21 +1,16 @@
 'use strict';
 
-import { DataTypes, QueryInterface, UUIDV4 } from 'sequelize';
+import { DataTypes, QueryInterface  } from 'sequelize';
 
 export default {
   up: async (queryInterface: QueryInterface): Promise<void> => {
     await queryInterface.createTable('UserToGroup', {
-        id: {
-          type: DataTypes.INTEGER,
-          primaryKey: true,
-          autoIncrement: true,
-        },
         userId: {
-          type: DataTypes.UUIDV4,
+          type: DataTypes.UUID,
           allowNull: false,
         },
         groupId: {
-          type: DataTypes.UUIDV4,
+          type: DataTypes.UUID,
           allowNull: false,
         },
       });

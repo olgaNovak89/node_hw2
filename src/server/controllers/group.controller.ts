@@ -8,6 +8,7 @@ import { GroupType } from '@/types';
 export const group =  {
     async create(req: Request, res: Response): Promise<any> {
         const groupData = req.body;
+        console.log(groupData)
         const validatedData = schemaGroup.validate({...groupData }, { abortEarly: false });
         if (validatedData.error) {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
@@ -23,6 +24,7 @@ export const group =  {
         const {name} = req.query;
         return Group
             .findAll({
+                raw: true,
                 where: {
                     name: {
                         [Op.like]: `%${name}%`,
@@ -47,14 +49,14 @@ export const group =  {
 
         return Group
             .findOne({where: { id: group_id }})
-            .then(user => {
+            .then(group => {
                 // @ts-ignore
-                if (!user || user?.isDeleted) {
+                if (!group) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
-                return res.status(200).json(user);
+                return res.status(200).json(group);
             })
             .catch(error => res.status(400).send(error));
     },
@@ -62,7 +64,7 @@ export const group =  {
     async update(req: Request, res: Response): Promise<any> {
         const { group_id } = req.params;
         return Group
-            .findOne({where: {id: group_id }})
+            .findOne({raw: true,where: {id: group_id }})
             .then((groupFound: GroupType) => {
                 if (!groupFound) {
                     return res.status(404).send({
@@ -75,7 +77,7 @@ export const group =  {
                 if (validatedData.error) {
                     return res.status(404).json(validatedData.error);
                 } else {
-
+                    console.log(groupData, groupFound, validatedData)
                 return Group
                     .update(validatedData.value, {
                         where: {
@@ -93,7 +95,7 @@ export const group =  {
         const { group_id } = req.params;
         return Group
         .destroy({where: {id: group_id}})
-        .then((code: number) => res.status(code).json({message: `Group ${group_id} is deleted`}))
+        .then((code: number) =>{console.log(code); res.status(200).json({message: `Group ${group_id} is deleted`})})
         .catch((error) => res.status(400).send(error));
 
     },
