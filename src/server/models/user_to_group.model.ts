@@ -2,7 +2,7 @@ import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript
 import Group from '@/models/Group.model';
 import Users from '@/models/User.model';
 
-@Table({ timestamps: false})
+@Table({ timestamps: false, freezeTableName: true})
 class UserToGroup extends Model {
   // @Column({type: DataType.NUMBER, autoIncrement: true, primaryKey: true})
   // id: number
