@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 import { User } from '@/types';
 import Group from '@/models/Group.model';
 import { IsArray } from 'sequelize-typescript';
+import UserToGroup from '@/models/user_to_group.model';
 
 export const schemaUser = Joi.object<User>({
     // id: Joi.string().required(),
@@ -12,8 +13,13 @@ export const schemaUser = Joi.object<User>({
     .min(4)
     .max(130).required().optional().allow(null),
     isDeleted: Joi.boolean().optional().allow(null),
-});11
+});
+const permissionSchema = Joi.string().valid('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES');
 export const schemaGroup = Joi.object<Group>({
     name: Joi.string().required().optional().allow(null),
-    permissions: Joi.array().items(Joi.string().valid('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES')).optional().allow(null)
+    permissions: Joi.alternatives().try(Joi.array().items(permissionSchema), permissionSchema).optional().allow(null),
+})
+export const schemaUserToGroup = Joi.object<UserToGroup>({
+    userId: Joi.string().required(),
+    groupId: Joi.string().required(),
 })

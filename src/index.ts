@@ -6,9 +6,10 @@ import * as logger from 'morgan';
 import '@/models/index';
 import usersRouter from '@/routers/users';
 import groupRouter from '@/routers/group';
+import userToGroupRouter from '@/routers/user_to_group';
 
 export const app = express();
-
+console.log()
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,6 +18,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', usersRouter);
 app.use('/group', groupRouter);
-
+app.use('/groups', userToGroupRouter)
 
 export default app;

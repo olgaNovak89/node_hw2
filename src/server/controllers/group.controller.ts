@@ -4,11 +4,12 @@ import { usersSearchLimit } from '@/config';
 import { schemaGroup } from '@/schema';
 import Group from '@/models/Group.model';
 import { GroupType } from '@/types';
+import db from '../models';
+import UserToGroup from '@/models/user_to_group.model';
 
 export const group =  {
     async create(req: Request, res: Response): Promise<any> {
         const groupData = req.body;
-        console.log(groupData)
         const validatedData = schemaGroup.validate({...groupData }, { abortEarly: false });
         if (validatedData.error) {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
@@ -49,42 +50,50 @@ export const group =  {
 
         return Group
             .findOne({where: { id: group_id }})
-            .then(group => {
+            .then(groupFound => {
                 // @ts-ignore
                 if (!group) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
-                return res.status(200).json(group);
+                return res.status(200).json(groupFound);
             })
             .catch(error => res.status(400).send(error));
     },
 
     async update(req: Request, res: Response): Promise<any> {
         const { group_id } = req.params;
+        const groupData = req.body;
         return Group
-            .findOne({raw: true,where: {id: group_id }})
+            .findOne({raw: true, where: {id: group_id }})
             .then((groupFound: GroupType) => {
                 if (!groupFound) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
-                const groupData = req.body;
                 const validatedData = schemaGroup.validate(groupData
                 , { abortEarly: false });
                 if (validatedData.error) {
                     return res.status(404).json(validatedData.error);
                 } else {
+                    const sanitizeToArray = (value) => Array.isArray(value) ? value : [value];
+                    const finalValues = validatedData.value.permissions ?
+                        {
+                            ...validatedData.value,
+                            permissions: sanitizeToArray(validatedData.value.permissions),
+                        } :
+                        validatedData.value;
                     console.log(groupData, groupFound, validatedData)
-                return Group
-                    .update(validatedData.value, {
+                    return Group
+                    .update(finalValues, {
                         where: {
                           id: group_id,
                         },
                       })
-                    .then(() => res.status(200).json({...groupFound, ...validatedData.value}))
+                    .then(() => {
+                        res.status(200).json({...groupFound, ...finalValues})})
                     .catch((error) => res.status(400).send(error));
                 }
             })
@@ -93,10 +102,21 @@ export const group =  {
 
     async destroy(req: Request, res: Response): Promise<any> {
         const { group_id } = req.params;
-        return Group
-        .destroy({where: {id: group_id}})
-        .then((code: number) =>{console.log(code); res.status(200).json({message: `Group ${group_id} is deleted`})})
-        .catch((error) => res.status(400).send(error));
-
+        const t = await db.sequelize.transaction();
+        try {
+            const count = Group
+            .destroy({where: {id: group_id }, transaction: t})
+            UserToGroup.destroy({where: {
+                groupId: group_id
+              , transaction: t,
+            }})
+            await t.commit();
+            if (!count) {
+                res.status(404).send({message: `Group with ID ${group_id} not found`})
+            }
+            res.status(200).json({message: `Group ${group_id} is deleted`})
+        } catch (error) {
+            res.status(400).send(error)
+        }
     },
 };

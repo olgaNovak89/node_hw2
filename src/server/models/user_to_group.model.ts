@@ -4,6 +4,8 @@ import Users from '@/models/User.model';
 
 @Table({ timestamps: false})
 class UserToGroup extends Model {
+  // @Column({type: DataType.NUMBER, autoIncrement: true, primaryKey: true})
+  // id: number
   @ForeignKey(() => Users)
   @Column({type: DataType.UUIDV4, allowNull: false})
   userId: string

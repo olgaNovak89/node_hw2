@@ -1,8 +1,10 @@
 import Users from '@/models/User.model';
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { usersSearchLimit } from '@/config';
 import { schemaUser } from '@/schema';
+import db from '../models';
+import UserToGroup from '@/models/user_to_group.model';
 
 export const users =  {
     async create(req: Request, res: Response): Promise<any> {
@@ -49,7 +51,6 @@ export const users =  {
         return Users
             .findOne({where: { id: user_id, isDeleted: false}})
             .then(user => {
-                // @ts-ignore
                 if (!user || user?.isDeleted) {
                     return res.status(404).send({
                         message: 'User Not Found',
@@ -92,22 +93,37 @@ export const users =  {
 
     async destroy(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
-        return Users
-        .findOne({where: {id: user_id}})
-            .then(user => {
-                if (!user || user.isDeleted) {
+        if (!user_id) {
+            return res.status(404).send({
+                message: 'User IDis required',
+            });
+        }
+        const user = await Users
+                .findOne({where: {id: user_id}});
+
+        if (!user || user.isDeleted) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
-                return Users
+        const t = await db.sequelize.transaction();
+        try {
+
+                Users
                     .update({isDeleted: true},
                         {where: {
                           id: user_id,
-                        }}, )
-                    .then(() => res.status(200).json({message: `User ${user_id} is deleted` }))
-                    .catch((error) => res.status(400).send(error));
-            })
-            .catch((error) => res.status(400).send(error));
+                        },
+                        transaction: t,
+                    })
+                UserToGroup.destroy({where: {
+                    userId: user_id
+                  , transaction: t}})
+                await t.commit();
+                res.status(200).json({message: `User ${user_id} is deleted` })
+        } catch (error) {
+          await t.rollback();
+            res.status(400).send({message: error})
+        }
     },
 };

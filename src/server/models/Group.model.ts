@@ -3,7 +3,7 @@ import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescr
 import Users from './User.model';
 import UserToGroup from './user_to_group.model';
 
-@Table({ timestamps: false, freezeTableName: true,})
+@Table({ timestamps: false, freezeTableName: true, })
 class Group extends Model<Group> {
   @BelongsToMany(() => Users, () => UserToGroup, 'groupId')
   users: Users[]
