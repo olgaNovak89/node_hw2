@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { schemaUserToGroup } from '@/schema';
 import UserToGroup from '@/models/user_to_group.model';
 import db from '../models';
+import Users from '@/models/user.model';
+import Group from '@/models/group.model';
 
 export const users_to_group =  {
     async add(req: Request, res: Response): Promise<any> {
@@ -12,18 +14,33 @@ export const users_to_group =  {
         if (validatedData.error) {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {
-            return UserToGroup
-                        //@ts-ignore
-            .create(validatedData.value)
-            .then(UserGoup =>
-                res.status(201).send(
-                    {
-                        message:
-                        `User with ID ${user_id} is added to group with ID ${group_id}`,
-                     UserGoup,
-                    },
-                     ))
-            .catch(error => res.status(400).send({error: {user: validatedData.value, message: 'Error happened', ...error}}));
+            const t = await db.sequelize.transaction();
+            try {
+                const user = await Users.findOne({where: { id: user_id }});
+                const group = await Group.findOne({where: { id: group_id }});
+                if (user && group) {
+                    await UserToGroup
+                            //@ts-ignore
+                    .create(validatedData.value, {transaction: t})
+                    .then(UserGoup =>
+                        res.status(201).send(
+                            {
+                                message:
+                                `User with ID ${user_id} is added to group with ID ${group_id}`,
+                            UserGoup,
+                            },
+                        ));
+                    
+                } else {
+                    res.status(404).send({
+                        message: 'User or group not found'
+                    });
+                    await t.rollback();
+                }
+            } catch (error) {
+                await t.rollback();
+                res.status(400).send(error);
+            }
         }
     },
 
