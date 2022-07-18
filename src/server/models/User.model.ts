@@ -1,10 +1,10 @@
-import { Table, Column, Model, DataType, BelongsTo, BelongsToMany } from 'sequelize-typescript'
+import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript'
 import Group from './group.model';
 import UserToGroup from './user_to_group.model';
 @Table({ timestamps: false})
 class Users extends Model<Users> {
   @BelongsToMany(() => Group, () => UserToGroup, 'userId')
-  groups: Group[]
+  groups: Group[];
 
   @Column({type: DataType.UUIDV4, allowNull: false, primaryKey: true, defaultValue: DataType.UUIDV4})
   id: string;

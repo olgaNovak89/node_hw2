@@ -118,7 +118,7 @@ export const users =  {
                         },
                         transaction: t
                     }
-                ).catch(error => {new Error(error.toString())})
+                )
                 await UserToGroup
                 .destroy(
                     {
@@ -131,9 +131,7 @@ export const users =  {
                     console.log(
                         `${count} records were deleted from UserToGroup`
                     ))
-                .catch(error => {new Error(error.toString())})
                 await t.commit();
-                
                 res.status(200).json({message: `User ${user_id} is deleted` })
         } catch (error) {
             await t.rollback();

@@ -116,6 +116,7 @@ export const group =  {
             }
             res.status(200).json({message: `Group ${group_id} is deleted`})
         } catch (error) {
+            await t.rollback();
             res.status(400).send(error)
         }
     },

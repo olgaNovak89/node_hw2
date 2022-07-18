@@ -20,7 +20,6 @@ export const users_to_group =  {
                 const group = await Group.findOne({where: { id: group_id }});
                 if (user && group) {
                     await UserToGroup
-                            //@ts-ignore
                     .create(validatedData.value, {transaction: t})
                     .then(UserGoup =>
                         res.status(201).send(
@@ -68,27 +67,27 @@ export const users_to_group =  {
         const { user_id, group_id } = req.params;
         const t = await db.sequelize.transaction();
         try {
-        const count = await UserToGroup
-        .destroy({
-            where: {
-                userId: user_id,
-                groupId: group_id,
-            },
-            transaction: t,
-        });
-        UserToGroup.destroy({where: {
-            id: user_id,
-            transaction: t,
-        }})
-        await t.commit();
-        if (!count) {
-                res.status(404).send({
-                    message: `User with ID ${user_id} is not found in group with ID ${group_id}`,
+            const count = await UserToGroup
+            .destroy({
+                where: {
+                    userId: user_id,
+                    groupId: group_id,
+                },
+                transaction: t,
+            });
+            UserToGroup.destroy({where: {
+                id: user_id,
+                transaction: t,
+            }})
+            await t.commit();
+            if (!count) {
+                    res.status(404).send({
+                        message: `User with ID ${user_id} is not found in group with ID ${group_id}`,
+                    })
+                }
+            res.status(200).json({
+                    message: `User with ID ${user_id} is deleted from the group with ID ${group_id}`,
                 })
-            }
-        res.status(200).json({
-                message: `User with ID ${user_id} is deleted from the group with ID ${group_id}`,
-            })
         } catch (error) {
           await t.rollback();
           res.status(400).send({message: error})
