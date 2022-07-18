@@ -119,7 +119,7 @@ export const users =  {
                         transaction: t
                     }
                 ).catch(error => {new Error(error.toString())})
-                UserToGroup
+                await UserToGroup
                 .destroy(
                     {
                         where: {

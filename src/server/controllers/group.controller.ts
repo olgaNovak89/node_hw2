@@ -106,7 +106,7 @@ export const group =  {
         try {
             const count = Group
             .destroy({where: {id: group_id }, transaction: t})
-            UserToGroup.destroy({where: {
+            await UserToGroup.destroy({where: {
                 groupId: group_id
             
             },transaction: t})
