@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { User } from '@/types';
-import Group from '@/models/Group.model';
+import Group from '@/models/group.model';
 import { IsArray } from 'sequelize-typescript';
 import UserToGroup from '@/models/user_to_group.model';
 
