@@ -18,6 +18,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', usersRouter);
 app.use('/group', groupRouter);
-app.use('/groups', userToGroupRouter)
-
+app.use('/groups', userToGroupRouter);
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Internal server error');
+    next();
+});
+process.on('uncaughtException', (error) => {
+    console.error( error);
+    process.exit(1);
+ });
+ 
 export default app;
