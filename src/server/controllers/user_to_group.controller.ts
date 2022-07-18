@@ -13,7 +13,7 @@ export const users_to_group =  {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {
             return UserToGroup
-            // @ts-ignore
+                        //@ts-ignore
             .create(validatedData.value)
             .then(UserGoup =>
                 res.status(201).send(
@@ -29,12 +29,11 @@ export const users_to_group =  {
 
     retrieve(req: Request, res: Response): Promise<any> {
         const { group_id } = req.params;
-        
         return UserToGroup
             .findAll({
-                where: { gropId: group_id },
-                group: 'groupId',
-                include: [UserToGroup.associations.user_id],
+                where: { groupId: group_id },
+                group: ['groupId'], 
+                raw: true
             })
             .then(groups => {
                 if (!groups || !groups.length) {
@@ -42,7 +41,7 @@ export const users_to_group =  {
                         message: 'Group Not Found',
                     });
                 }
-                return res.status(200).json(groups[0]);
+                return res.status(200).json(groups);
             })
             .catch(error => res.status(400).send(error));
     },
@@ -56,7 +55,7 @@ export const users_to_group =  {
         .destroy({
             where: {
                 userId: user_id,
-                gropId: group_id,
+                groupId: group_id,
             },
             transaction: t,
         });

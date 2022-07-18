@@ -108,8 +108,8 @@ export const group =  {
             .destroy({where: {id: group_id }, transaction: t})
             UserToGroup.destroy({where: {
                 groupId: group_id
-              , transaction: t,
-            }})
+            
+            },transaction: t})
             await t.commit();
             if (!count) {
                 res.status(404).send({message: `Group with ID ${group_id} not found`})

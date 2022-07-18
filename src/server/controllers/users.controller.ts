@@ -110,19 +110,33 @@ export const users =  {
         try {
 
                 Users
-                    .update({isDeleted: true},
-                        {where: {
+                .update(
+                    {isDeleted: true},
+                    {
+                        where: {
                           id: user_id,
                         },
-                        transaction: t,
-                    })
-                UserToGroup.destroy({where: {
-                    userId: user_id
-                  , transaction: t}})
+                        transaction: t
+                    }
+                ).catch(error => {new Error(error.toString())})
+                UserToGroup
+                .destroy(
+                    {
+                        where: {
+                            userId: user_id
+                        },
+                        transaction: t
+                    }).then(
+                    count => 
+                    console.log(
+                        `${count} records were deleted from UserToGroup`
+                    ))
+                .catch(error => {new Error(error.toString())})
                 await t.commit();
+                
                 res.status(200).json({message: `User ${user_id} is deleted` })
         } catch (error) {
-          await t.rollback();
+            await t.rollback();
             res.status(400).send({message: error})
         }
     },
