@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, BelongsTo, BelongsToMany } from 'sequelize-typescript'
-import Group from './Group.model';
+import Group from './group.model';
 import UserToGroup from './user_to_group.model';
 @Table({ timestamps: false})
 class Users extends Model<Users> {

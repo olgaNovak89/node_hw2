@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import { usersSearchLimit } from '@/config';
 import { schemaGroup } from '@/schema';
-import Group from '@/models/Group.model';
+import Group from '@/models/group.model';
 import { GroupType } from '@/types';
 import db from '../models';
 import UserToGroup from '@/models/user_to_group.model';
