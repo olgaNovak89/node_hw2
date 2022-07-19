@@ -125,8 +125,7 @@ export const group =  {
         return Group
             .findOne({
                 where: { id: group_id },
-                include: [User
-                ]
+                include: [User]
             })
             .then(groups => {
                 if (!groups ) {
