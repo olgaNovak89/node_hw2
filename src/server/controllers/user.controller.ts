@@ -117,13 +117,8 @@ export const user =  {
                         where: {
                           id: user_id,
                         },
-<<<<<<< HEAD:src/server/controllers/users.controller.ts
-                        transaction: t
-                    }
-=======
                         transaction: t,
                     },
->>>>>>> main:src/server/controllers/user.controller.ts
                 )
                 await UserToGroup
                 .destroy(
@@ -138,10 +133,6 @@ export const user =  {
                         `${count} records were deleted from UserToGroup`,
                     ))
                 await t.commit();
-<<<<<<< HEAD:src/server/controllers/users.controller.ts
-=======
-
->>>>>>> main:src/server/controllers/user.controller.ts
                 res.status(200).json({message: `User ${user_id} is deleted` })
         } catch (error) {
             await t.rollback();
