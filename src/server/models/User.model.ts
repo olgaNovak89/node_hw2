@@ -1,9 +1,9 @@
-import { Table, Column, Model, DataType, BelongsTo, BelongsToMany } from 'sequelize-typescript'
+import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript'
 import Group from './group.model';
 import UserToGroup from './user_to_group.model';
-@Table({ timestamps: false})
-class Users extends Model<Users> {
-  @BelongsToMany(() => Group, () => UserToGroup, 'userId')
+@Table({ timestamps: false, freezeTableName: true})
+class User extends Model<User> {
+  @BelongsToMany(() => Group, () => UserToGroup, 'id', 'userId')
   groups: Group[]
 
   @Column({type: DataType.UUIDV4, allowNull: false, primaryKey: true, defaultValue: DataType.UUIDV4})
@@ -18,4 +18,4 @@ class Users extends Model<Users> {
   @Column({type: DataType.BOOLEAN, defaultValue: false})
   isDeleted: boolean
 }
-export default Users
+export default User

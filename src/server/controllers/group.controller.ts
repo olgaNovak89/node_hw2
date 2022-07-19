@@ -107,9 +107,9 @@ export const group =  {
             const count = Group
             .destroy({where: {id: group_id }, transaction: t})
             await UserToGroup.destroy({where: {
-                groupId: group_id
-            
-            },transaction: t})
+                groupId: group_id,
+
+            }, transaction: t})
             await t.commit();
             if (!count) {
                 res.status(404).send({message: `Group with ID ${group_id} not found`})
@@ -118,5 +118,23 @@ export const group =  {
         } catch (error) {
             res.status(400).send(error)
         }
+    },
+    async retrieveUsersInGroup(req: Request, res: Response): Promise<any> {
+        const { group_id } = req.params;
+        return UserToGroup
+            .findAll({
+                where: { groupId: group_id },
+                group: ['groupId'],
+                raw: true,
+            })
+            .then(groups => {
+                if (!groups || !groups.length) {
+                    return res.status(404).send({
+                        message: 'Group Not Found',
+                    });
+                }
+                return res.status(200).json(groups);
+            })
+            .catch(error => res.status(400).send(error));
     },
 };

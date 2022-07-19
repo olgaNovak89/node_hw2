@@ -1,28 +1,29 @@
-import Users from '@/models/user.model';
+import User from '@/models/user.model';
 import { Request, Response } from 'express';
 import { Op, Sequelize } from 'sequelize';
 import { usersSearchLimit } from '@/config';
-import { schemaUser } from '@/schema';
+import { schemaUser, schemaUserToGroup } from '@/schema';
 import db from '../models';
 import UserToGroup from '@/models/user_to_group.model';
+import Group from '@/models/group.model';
 
-export const users =  {
+export const user =  {
     async create(req: Request, res: Response): Promise<any> {
         const userData = req.body;
         const validatedData = schemaUser.validate({...userData }, { abortEarly: false });
         if (validatedData.error) {
             res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {
-            return Users
+            return User
             .create(validatedData.value)
-            .then(user => res.status(201).send({message: 'New user is created', user}))
+            .then(userRetreived => res.status(201).send({message: 'New user is created', userRetreived}))
             .catch(error => res.status(400).send({error: {user: validatedData.value, message: 'Error happened', ...error}}));
         }
     },
 
     async list(req: Request, res: Response): Promise<any> {
         const {login} = req.query;
-        return Users
+        return User
             .findAll({
 
                     where: { login: {
@@ -34,7 +35,7 @@ export const users =  {
                 subQuery: true,
                 limit: parseInt(req.query?.limit?.toString() || '', 1) || usersSearchLimit,
             })
-            .then((usersFound: Users[]) => {
+            .then((usersFound: User[]) => {
                 if (usersFound.length) {
                     res.status(200).json(usersFound)
                 } else {
@@ -48,25 +49,25 @@ export const users =  {
     retrieve(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
 
-        return Users
+        return User
             .findOne({where: { id: user_id, isDeleted: false}})
-            .then(user => {
-                if (!user || user?.isDeleted) {
+            .then(userRetreived => {
+                if (!userRetreived || userRetreived?.isDeleted) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
-                return res.status(200).json(user);
+                return res.status(200).json(userRetreived);
             })
             .catch(error => res.status(400).send(error));
     },
 
     async update(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
-        return Users
+        return User
             .findOne({where: {id: user_id, isDeleted: false}})
-            .then(user => {
-                if (!user) {
+            .then(userRetreived => {
+                if (!userRetreived) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
@@ -78,7 +79,7 @@ export const users =  {
                     return res.status(404).json(validatedData.error);
                 } else {
 
-                return Users
+                return User
                     .update(validatedData.value, {
                         where: {
                           id: user_id,
@@ -98,10 +99,10 @@ export const users =  {
                 message: 'User IDis required',
             });
         }
-        const user = await Users
-                .findOne({where: {id: user_id}});
+        const userRetreived = await User
+                .findOne({where: {id: user_id, isDeleted: false}});
 
-        if (!user || user.isDeleted) {
+        if (!userRetreived) {
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
@@ -109,35 +110,70 @@ export const users =  {
         const t = await db.sequelize.transaction();
         try {
 
-                Users
+                User
                 .update(
                     {isDeleted: true},
                     {
                         where: {
                           id: user_id,
                         },
-                        transaction: t
-                    }
-                ).catch(error => {new Error(error.toString())})
+                        transaction: t,
+                    },
+                )
                 await UserToGroup
                 .destroy(
                     {
                         where: {
-                            userId: user_id
+                            userId: user_id,
                         },
-                        transaction: t
+                        transaction: t,
                     }).then(
-                    count => 
+                    count =>
                     console.log(
-                        `${count} records were deleted from UserToGroup`
+                        `${count} records were deleted from UserToGroup`,
                     ))
-                .catch(error => {new Error(error.toString())})
                 await t.commit();
-                
+
                 res.status(200).json({message: `User ${user_id} is deleted` })
         } catch (error) {
             await t.rollback();
             res.status(400).send({message: error})
+        }
+    },
+    async addUserToGroup(req: Request, res: Response): Promise<any> {
+        const { group_id , user_id } = req.params;
+        const validatedData = schemaUserToGroup.validate(
+            {groupId: group_id, userId: user_id}, { abortEarly: false },
+        );
+        if (validatedData.error) {
+            res.status(400).send({...validatedData.error, message: 'Validation error'});
+        } else {
+            const t = await db.sequelize.transaction();
+            try {
+                const userRetreived = await User.findOne({where: { id: user_id }});
+                const group = await Group.findOne({where: { id: group_id }});
+                if (userRetreived && group) {
+                    await UserToGroup
+                    .create(validatedData.value, {transaction: t})
+                    .then(UserGoup =>
+                        res.status(201).send(
+                            {
+                                message:
+                                `User with ID ${user_id} is added to group with ID ${group_id}`,
+                            UserGoup,
+                            },
+                        ));
+
+                } else {
+                    res.status(404).send({
+                        message: 'User or group not found',
+                    });
+                    await t.rollback();
+                }
+            } catch (error) {
+                await t.rollback();
+                res.status(400).send(error);
+            }
         }
     },
 };

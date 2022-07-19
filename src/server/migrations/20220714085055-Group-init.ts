@@ -7,7 +7,6 @@ export default {
     await queryInterface.createTable('Group', {
         id: {
           allowNull: false,
-          // autoIncrement: true,
           primaryKey: true,
           type: DataTypes.UUID,
           defaultValue: UUIDV4,

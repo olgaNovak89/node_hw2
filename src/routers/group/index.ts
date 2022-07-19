@@ -11,4 +11,5 @@ router.get('/', groupController.list);
 router.delete('/:group_id',  groupController.destroy);
 router.put('/:group_id', groupController.update);
 router.post('/', groupController.create);
+router.get('/:group_id/users', groupController.retrieveUsersInGroup)
 export default router
