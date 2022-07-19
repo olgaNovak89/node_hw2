@@ -6,6 +6,7 @@ import Group from '@/models/group.model';
 import { GroupType } from '@/types';
 import db from '../models';
 import UserToGroup from '@/models/user_to_group.model';
+import User from '@/models/user.model';
 
 export const group =  {
     async create(req: Request, res: Response): Promise<any> {
@@ -121,19 +122,24 @@ export const group =  {
     },
     async retrieveUsersInGroup(req: Request, res: Response): Promise<any> {
         const { group_id } = req.params;
-        return UserToGroup
-            .findAll({
-                where: { groupId: group_id },
+        console.log(UserToGroup.associations)
+        return Group
+            .findOne({
+                where: { id: group_id },
                 group: ['groupId'],
-                raw: true,
+                subQuery:true,
+                include: [{
+                    all: true
+                  }],
+                raw: true
             })
-            .then(groups => {
-                if (!groups || !groups.length) {
+            .then(groupFound => {
+                if (!groupFound) {
                     return res.status(404).send({
                         message: 'Group Not Found',
                     });
                 }
-                return res.status(200).json(groups);
+                return res.status(200).json(groupFound);
             })
             .catch(error => res.status(400).send(error));
     },

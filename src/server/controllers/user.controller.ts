@@ -153,9 +153,9 @@ export const user =  {
                 const userRetreived = await User.findOne({where: { id: user_id }});
                 const group = await Group.findOne({where: { id: group_id }});
                 if (userRetreived && group) {
-                    console.log(validatedData)
+                    console.log(UserToGroup.rawAttributes)
                     await UserToGroup
-                    
+                    //@ts-ignore
                     .create(validatedData.value, {transaction: t})
                     .then(UserGoup =>
                         res.status(201).send(
@@ -165,7 +165,7 @@ export const user =  {
                             UserGoup,
                             },
                         ));
-
+                    t.commit()
                 } else {
                     res.status(404).send({
                         message: 'User or group not found',
