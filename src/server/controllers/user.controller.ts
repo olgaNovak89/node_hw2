@@ -154,7 +154,7 @@ export const user =  {
                 const group = await Group.findOne({where: { id: group_id }});
                 if (userRetreived && group) {
                     await UserToGroup
-                    //@ts-ignore
+                    // @ts-ignore
                     .create(validatedData.value, {transaction: t})
                     .then(UserGoup =>
                         res.status(201).send(
