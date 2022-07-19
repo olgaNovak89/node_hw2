@@ -122,24 +122,19 @@ export const group =  {
     },
     async retrieveUsersInGroup(req: Request, res: Response): Promise<any> {
         const { group_id } = req.params;
-        console.log(UserToGroup.associations)
         return Group
             .findOne({
                 where: { id: group_id },
-                group: ['groupId'],
-                subQuery:true,
-                include: [{
-                    all: true
-                  }],
-                raw: true
+                include: [User
+                ]
             })
-            .then(groupFound => {
-                if (!groupFound) {
+            .then(groups => {
+                if (!groups ) {
                     return res.status(404).send({
                         message: 'Group Not Found',
                     });
                 }
-                return res.status(200).json(groupFound);
+                return res.status(200).json(groups);
             })
             .catch(error => res.status(400).send(error));
     },

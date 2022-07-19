@@ -153,7 +153,6 @@ export const user =  {
                 const userRetreived = await User.findOne({where: { id: user_id }});
                 const group = await Group.findOne({where: { id: group_id }});
                 if (userRetreived && group) {
-                    console.log(UserToGroup.rawAttributes)
                     await UserToGroup
                     //@ts-ignore
                     .create(validatedData.value, {transaction: t})
