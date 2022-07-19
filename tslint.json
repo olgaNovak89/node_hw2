@@ -43,7 +43,8 @@
       "check-open-brace",
       "check-catch",
       "check-else",
-      "check-whitespace" ], "quotemark": [true, "single"], "radix": true, "semicolon": [false, "always"], "switch-default": true, "triple-equals": [true, "allow-null-check"], "typedef": [
+      "check-whitespace" ],
+    "quotemark": [true, "single"], "radix": true, "semicolon": [false, "always"], "switch-default": true, "triple-equals": [true, "allow-null-check"], "typedef": [
         false, "call-signature", "parameter", "property-declaration", "member-variable-declaration" ], "typedef-whitespace": [
         true, {
         "call-signature": "nospace", "index-signature": "nospace", "parameter": "nospace", "property-declaration": "nospace", "variable-declaration": "nospace" }
