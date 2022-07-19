@@ -5,7 +5,7 @@ import User from '@/models/user.model';
 
 @Table({ timestamps: false, freezeTableName: true, })
 class Group extends Model<Group> {
-  @BelongsToMany(() => User, () => UserToGroup, 'id', 'group_id')
+  @BelongsToMany(() => User, () => UserToGroup, 'groupId', 'id')
   users: User[]
 
   @Column({type: DataType.UUIDV4, allowNull: false, primaryKey: true, defaultValue: DataType.UUIDV4})

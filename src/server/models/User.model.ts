@@ -3,7 +3,7 @@ import Group from './group.model';
 import UserToGroup from './user_to_group.model';
 @Table({ timestamps: false, freezeTableName: true})
 class User extends Model<User> {
-  @BelongsToMany(() => Group, () => UserToGroup, 'id', 'userId')
+  @BelongsToMany(() => Group, () => UserToGroup, 'userId', 'id')
   groups: Group[]
 
   @Column({type: DataType.UUIDV4, allowNull: false, primaryKey: true, defaultValue: DataType.UUIDV4})
