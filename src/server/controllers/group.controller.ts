@@ -6,6 +6,7 @@ import Group from '@/models/group.model';
 import { GroupType } from '@/types';
 import db from '../models';
 import UserToGroup from '@/models/user_to_group.model';
+import User from '@/models/user.model';
 
 export const group =  {
     async create(req: Request, res: Response): Promise<any> {
@@ -107,9 +108,9 @@ export const group =  {
             const count = Group
             .destroy({where: {id: group_id }, transaction: t})
             await UserToGroup.destroy({where: {
-                groupId: group_id
-            
-            },transaction: t})
+                groupId: group_id,
+
+            }, transaction: t})
             await t.commit();
             if (!count) {
                 res.status(404).send({message: `Group with ID ${group_id} not found`})
@@ -119,5 +120,22 @@ export const group =  {
             await t.rollback();
             res.status(400).send(error)
         }
+    },
+    async retrieveUsersInGroup(req: Request, res: Response): Promise<any> {
+        const { group_id } = req.params;
+        return Group
+            .findOne({
+                where: { id: group_id },
+                include: [User],
+            })
+            .then(groups => {
+                if (!groups ) {
+                    return res.status(404).send({
+                        message: 'Group Not Found',
+                    });
+                }
+                return res.status(200).json(groups);
+            })
+            .catch(error => res.status(400).send(error));
     },
 };

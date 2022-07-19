@@ -1,12 +1,12 @@
 import { Permission } from '@/types';
 import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
-import Users from '@/models/user.model';
 import UserToGroup from '@/models/user_to_group.model';
+import User from '@/models/user.model';
 
 @Table({ timestamps: false, freezeTableName: true, })
 class Group extends Model<Group> {
-  @BelongsToMany(() => Users, () => UserToGroup, 'groupId')
-  users: Users[]
+  @BelongsToMany(() => User, () => UserToGroup)
+  users: User[]
 
   @Column({type: DataType.UUIDV4, allowNull: false, primaryKey: true, defaultValue: DataType.UUIDV4})
   id: string;

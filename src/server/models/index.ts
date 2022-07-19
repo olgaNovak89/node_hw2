@@ -5,7 +5,7 @@ const basename = path.basename(module.filename);
 const env: 'test' | 'development' | 'production' = process.env.NODE_ENV || 'development';
 // tslint-disable-next-line no-var-requires
 import allConfig from '@/config/config';
-import Users from '@/models/user.model'
+import User from '@/models/user.model'
 import Group from '@/models/group.model';
 import UserToGroup from '@/models/user_to_group.model';
 
@@ -21,7 +21,7 @@ const sequelize = config.use_env_variable ?
       },
   );
 
-sequelize.addModels([Users, Group, UserToGroup]);
+sequelize.addModels([User, Group, UserToGroup]);
 sequelize.authenticate()
   .then((/* err */) => {
     console.log('----------------------------------------')
