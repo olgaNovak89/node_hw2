@@ -28,11 +28,11 @@
             "@/migrations/*" :["server/migrations/*"],
             "@/controllers/*" :["server/controllers/*"],
             "@/controllers" :["server/controllers/"],
-
             "@/config/*" :["server/config/*"],
             "@/types": ["types"],
             "@/schema": ["schema"],
             "@/config" :["config"],
+            "@/tools": ["tools"]
         }
     }
 }

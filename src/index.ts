@@ -20,7 +20,7 @@ app.use('/group', groupRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Internal server error');
+    res.status(500).send({message: 'Internal server error', error: err});
     next();
 });
 process.on('uncaughtException', (error) => {
