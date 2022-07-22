@@ -7,18 +7,22 @@ import { GroupType } from '@/types';
 import db from '../models';
 import UserToGroup from '@/models/user_to_group.model';
 import User from '@/models/user.model';
+import { errorLogger, logger } from '@/tools';
 
 export const group =  {
     async create(req: Request, res: Response): Promise<any> {
         const groupData = req.body;
         const validatedData = schemaGroup.validate({...groupData }, { abortEarly: false });
         if (validatedData.error) {
+            errorLogger(req, validatedData.error)
             res.status(400).send({...validatedData.error, message: 'Validation error'});
         } else {
             return Group
             .create(validatedData.value)
             .then(user => res.status(201).send({message: 'New group is created', user}))
-            .catch(error => res.status(400).send({error: {user: validatedData.value, message: 'Error happened', ...error}}));
+            .catch(error => {
+                errorLogger(req, error)
+                res.status(400).send({error: {user: validatedData.value, message: 'Error happened', ...error}})});
         }
     },
 
@@ -39,11 +43,15 @@ export const group =  {
                 if (groupsFound.length) {
                     res.status(200).json(groupsFound)
                 } else {
+                    errorLogger(req, 'user nor found')
                     const message = `Group with name similar to ${name} not found`;
                     res.status(404).json({message});
                 }
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => {
+                errorLogger(req, error);
+                res.status(400).send(error);
+            });
     },
 
     retrieve(req: Request, res: Response): Promise<any> {
@@ -52,15 +60,18 @@ export const group =  {
         return Group
             .findOne({where: { id: group_id }})
             .then(groupFound => {
-                // @ts-ignore
-                if (!group) {
+                if (!groupFound) {
+                    errorLogger(req, 'Group not found');
                     return res.status(404).send({
                         message: 'User Not Found',
                     });
                 }
                 return res.status(200).json(groupFound);
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => {
+                errorLogger(req, error);
+                res.status(400).send(error)
+            });
     },
 
     async update(req: Request, res: Response): Promise<any> {
@@ -68,6 +79,7 @@ export const group =  {
         const groupData = req.body;
         return Group
             .findOne({raw: true, where: {id: group_id }})
+            //@ts-ignore
             .then((groupFound: GroupType) => {
                 if (!groupFound) {
                     return res.status(404).send({
@@ -77,6 +89,7 @@ export const group =  {
                 const validatedData = schemaGroup.validate(groupData
                 , { abortEarly: false });
                 if (validatedData.error) {
+                    errorLogger(req, validatedData.error);
                     return res.status(404).json(validatedData.error);
                 } else {
                     const sanitizeToArray = (value) => Array.isArray(value) ? value : [value];
@@ -86,7 +99,6 @@ export const group =  {
                             permissions: sanitizeToArray(validatedData.value.permissions),
                         } :
                         validatedData.value;
-                    console.log(groupData, groupFound, validatedData)
                     return Group
                     .update(finalValues, {
                         where: {
@@ -95,10 +107,16 @@ export const group =  {
                       })
                     .then(() => {
                         res.status(200).json({...groupFound, ...finalValues})})
-                    .catch((error) => res.status(400).send(error));
+                    .catch((error) => {
+                        errorLogger(req, error);
+                        res.status(400).send(error);
+                    });
                 }
             })
-            .catch((error) => res.status(400).send(error));
+            .catch((error) => {
+                errorLogger(req, error);
+                res.status(400).send(error);
+            });
     },
 
     async destroy(req: Request, res: Response): Promise<any> {
@@ -113,11 +131,13 @@ export const group =  {
             }, transaction: t})
             await t.commit();
             if (!count) {
+                errorLogger(req, 'Group not found')
                 res.status(404).send({message: `Group with ID ${group_id} not found`})
             }
             res.status(200).json({message: `Group ${group_id} is deleted`})
         } catch (error) {
             await t.rollback();
+            errorLogger(req, error)
             res.status(400).send(error)
         }
     },
@@ -136,6 +156,9 @@ export const group =  {
                 }
                 return res.status(200).json(groups);
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => {
+                errorLogger(req, error);
+                res.status(400).send(error)
+            });
     },
 };
