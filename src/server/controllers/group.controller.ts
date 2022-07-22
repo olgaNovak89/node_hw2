@@ -43,7 +43,7 @@ export const group =  {
                 if (groupsFound.length) {
                     res.status(200).json(groupsFound)
                 } else {
-                    errorLogger(req, 'user nor found')
+                    errorLogger(req, 'Group nor found')
                     const message = `Group with name similar to ${name} not found`;
                     res.status(404).json({message});
                 }
@@ -63,7 +63,7 @@ export const group =  {
                 if (!groupFound) {
                     errorLogger(req, 'Group not found');
                     return res.status(404).send({
-                        message: 'User Not Found',
+                        message: 'Group Not Found',
                     });
                 }
                 return res.status(200).json(groupFound);
@@ -82,8 +82,9 @@ export const group =  {
             //@ts-ignore
             .then((groupFound: GroupType) => {
                 if (!groupFound) {
+                    errorLogger(req, 'Group not found')
                     return res.status(404).send({
-                        message: 'User Not Found',
+                        message: 'Group Not Found',
                     });
                 }
                 const validatedData = schemaGroup.validate(groupData
@@ -150,6 +151,7 @@ export const group =  {
             })
             .then(groups => {
                 if (!groups ) {
+                    errorLogger(req, 'Group Not Found');
                     return res.status(404).send({
                         message: 'Group Not Found',
                     });

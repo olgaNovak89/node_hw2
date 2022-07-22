@@ -12,13 +12,16 @@ export const logger = createLogger({
     format.json()
   ),
   defaultMeta: { service: 'your-service-name' },
+  exitOnError: false,
   transports: [
     new transports.File({ filename: './logs/quick-start-error.log', level: 'error',
     format: format.json()}),
     new transports.File({ filename: './logs/quick-start-combined.log' })
+  ],
+  rejectionHandlers: [
+    new transports.File({ filename: './logs/rejections.log' })
   ]
 });
-
 export const errorLogger = (req: Request, error: any)=> 
 (
     logger.error(`${new Date()} ${req.url}: 
