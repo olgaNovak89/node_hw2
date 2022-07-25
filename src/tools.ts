@@ -32,9 +32,22 @@ export const errorLogger = (req: Request, error: any)=>
 
 export function loggerTime (func: Function) {
         return async (...args) => {
-        const stratTime = Date.now()    
+          const stratTime = Date.now()    
+          try {
+            
         await func(...args)
+        console.log(`${func.name}:  ${args[0]?.url}, 
+            body: ${JSON.stringify(args[0]?.body)},
+            params: ${JSON.stringify(args[0]?.params)}`)
+        } catch (error) {
+          console.log(`${func.name}:  ${args[0]?.url}, 
+            body: ${JSON.stringify(args[0]?.body)},
+            params: ${JSON.stringify(args[0]?.params)},
+            error: ${JSON.stringify(error)}
+            `)
+        } finally {
         const executionTime = Date.now() - stratTime;
-        console.log(`${func.name}: ${executionTime}ms`)
+        console.log(`${func.name} execution time: ${executionTime}ms`)
+      }
     }
   }
