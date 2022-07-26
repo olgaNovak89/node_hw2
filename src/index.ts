@@ -6,17 +6,55 @@ import * as logger from 'morgan';
 import '@/models/index';
 import usersRouter from '@/routers/user';
 import groupRouter from '@/routers/group';
-
+import User from '@/models/user.model';
+import { Response, Request, NextFunction } from 'express';
+import * as jwt from 'jsonwebtoken';
 export const app = express();
-console.log()
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+const secret = process.env.SECRET || 'secret';
+app.post('/authenticate', (req: Request, res: Response) => {
+    console.log(req.body)
+    const {login, password} = req.body;
+    if (!login || !password) {
+        return res.status(401).send({
+            message: 'Login and password are required lo login.'
+        })
+    }
+    User.findOne({where: {login: login}}).then(user => {
+        if (!user) {
+            return res.status(401).send({
+                message: 'Wrong login/password combination.'
+            })
+        }
+        const payload = { sub: user.id, login: login};
+        const token = jwt.sign(payload, secret, { expiresIn: 120 });
+        return res.send({token})
+    })
+})
+const checkToken = (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers['authorization'];
+    console.log(token)
+    if (!token) {
+        return res.status(401).send({message: 'No token provided.'});
+    }
+    jwt.verify(token
+        // .replace('Bearer ', '')
+        , secret, (err, decoded) => {
+        if (err) {
+            console.log(err)
+            return res.status(403).send({message: 'Failed to authenticate token.'});
+        }
+        return next();
+    })
+};
 
-app.use('/user', usersRouter);
-app.use('/group', groupRouter);
+app.use('/user', checkToken, usersRouter);
+app.use('/group',checkToken, groupRouter);
+
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
