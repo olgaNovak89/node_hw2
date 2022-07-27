@@ -79,7 +79,7 @@ export const group =  {
         const groupData = req.body;
         return Group
             .findOne({raw: true, where: {id: group_id }})
-            //@ts-ignore
+            // @ts-ignore
             .then((groupFound: GroupType) => {
                 if (!groupFound) {
                     errorLogger(req, 'Group not found')

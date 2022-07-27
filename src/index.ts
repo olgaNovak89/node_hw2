@@ -21,13 +21,13 @@ app.post('/authenticate', (req: Request, res: Response) => {
     const {login, password} = req.body;
     if (!login || !password) {
         return res.status(401).send({
-            message: 'Login and password are required lo login.'
+            message: 'Login and password are required lo login.',
         })
     }
     User.findOne({where: {login: login}}).then(user => {
         if (!user) {
             return res.status(401).send({
-                message: 'Wrong login/password combination.'
+                message: 'Wrong login/password combination.',
             })
         }
         const payload = { sub: user.id, login: login};
@@ -36,7 +36,7 @@ app.post('/authenticate', (req: Request, res: Response) => {
     })
 })
 const checkToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers['authorization'];
+    const token = req.headers.authorization;
     console.log(token)
     if (!token) {
         return res.status(401).send({message: 'No token provided.'});
@@ -53,7 +53,7 @@ const checkToken = (req: Request, res: Response, next: NextFunction) => {
 };
 
 app.use('/user', checkToken, usersRouter);
-app.use('/group',checkToken, groupRouter);
+app.use('/group', checkToken, groupRouter);
 
 
 app.use((err, req, res, next) => {

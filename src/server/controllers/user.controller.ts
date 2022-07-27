@@ -21,11 +21,11 @@ export const user =  {
             .then(userRetreived => res.status(201).send({message: 'New user is created', userRetreived}))
             .catch(error => {
                 errorLogger(req, error);
-                res.status(400).send({error: 
+                res.status(400).send({error:
                     {
                         user: validatedData.value,
-                        message: 'Error happened', ...error
-                    }
+                        message: 'Error happened', ...error,
+                    },
                 })
             });
         }
