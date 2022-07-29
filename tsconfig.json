@@ -6,6 +6,7 @@
     "compilerOptions": {
         "sourceMap": true,
         "declaration": false,
+        "esModuleInterop": true,
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,

@@ -1,0 +1,23 @@
+{
+    "preset": "ts-jest",
+    "testRegex": "((\\.|/*.)(spec))\\.js?$",
+    "testPathDirs": ["src"],
+    "setupFiles": ["dotenv/config"],
+    "testEnvironment": "node",
+    "verbose": true,
+    "bail": true,
+    "roots": ["<rootDir>/src"],
+    "moduleDirectories": ["node_modules", "src"],
+    "moduleNameMapper": {
+        "@/routers/(.*)": "routers/$1",
+        "@/models/(.*)": "server/models/$1",
+        "@/migrations/(.*)": "server/migrations/$1",
+        "@/controllers/(.*)": "server/controllers/$1",
+        "@/controllers": "server/controllers/",
+        "@/config/(.*)": "server/config/$1",
+        "@/types": "types",
+        "@/schema": "schema",
+        "@/config": "config",
+        "@/tools": "tools"
+    }
+}

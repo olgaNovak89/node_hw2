@@ -8,9 +8,9 @@ export default {
       dialect: 'postgres',
     },
     test: {
-      username: 'root',
+      username: 'postgres',
       password: 'qwerty',
-      database: 'homework2',
+      database: 'homework2_test',
       host: '127.0.0.1',
       port: 5432,
       dialect: 'postgres',
