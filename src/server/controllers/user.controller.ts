@@ -62,9 +62,8 @@ export const user =  {
 
     retrieve(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
-
         return User
-            .findOne({where: { id: user_id, isDeleted: false}})
+            .findOne({where: { id: user_id, isDeleted: false}, raw: true})
             .then(userRetreived => {
                 if (!userRetreived) {
                     errorLogger(req, 'User not found');
@@ -83,14 +82,13 @@ export const user =  {
     async update(req: Request, res: Response): Promise<any> {
         const { user_id } = req.params;
         return User
-            .findOne({where: {id: user_id, isDeleted: false}})
+            .findOne({
+            where: {
+                id: user_id
+            },
+            raw: true})
             .then(userRetreived => {
-                if (!userRetreived) {
-                    errorLogger(req, 'User not found');
-                    return res.status(404).send({
-                        message: 'User Not Found',
-                    });
-                }
+                
                 const userData = req.body;
                 const validatedData = schemaUser.validate(userData
                 , { abortEarly: false });
@@ -103,9 +101,16 @@ export const user =  {
                     .update(validatedData.value, {
                         where: {
                           id: user_id,
-                        },
+                        }
                       })
-                    .then(() => res.status(200).json({...user, ...validatedData.value}))
+                    .then(() => {
+                        if (!userRetreived || userRetreived.isDeleted) {
+                            errorLogger(req, 'User not found');
+                            return res.status(404).send({
+                                message: 'User Not Found',
+                            });
+                        }
+                        res.status(200).json({...userRetreived, ...validatedData.value})})
                     .catch((error) => {
                         errorLogger(req, error);
                         res.status(400).send(error);
