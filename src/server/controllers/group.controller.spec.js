@@ -125,13 +125,13 @@ describe("Check method \'userController\' ", () => {
   //       {});
   //     await user.update(req, res)
   // });
-  // test('destroy, should 400', async () => {
-  //   let req = mockRequest({}, { user_id: "10cd9047-13db-457e-bf32-884de56cd5c9" }, {});
-  //   const res = mockResponse();
-  //   await user.destroy(req, res)
-  //   expect(res.send).toHaveBeenCalledTimes(1)
-  //   expect(res.send.mock.calls.length).toBe(1);
-  //   expect(res.status).toHaveBeenCalledTimes(1);
-  //   expect(res.status).toHaveBeenLastCalledWith(404);
-  // });
+  test('destroy, should 400', async () => {
+    let req = mockRequest({}, { group_id: "10cd9047-13db-457e-bf32-884de56cd5c9" }, {});
+    const res = mockResponse();
+    await group.destroy(req, res)
+    expect(res.send).toHaveBeenCalledTimes(1)
+    expect(res.send.mock.calls.length).toBe(1);
+    expect(res.status).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenLastCalledWith(404);
+  });
 });

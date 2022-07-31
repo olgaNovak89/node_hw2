@@ -128,7 +128,9 @@ export const group =  {
         const t = await db.sequelize.transaction();
         try {
             const count = Group
-            .destroy({where: {id: group_id }, transaction: t})
+            .destroy({where: 
+                {id: group_id },
+                transaction: t})
             await UserToGroup.destroy({where: {
                 groupId: group_id,
 
