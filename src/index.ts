@@ -44,9 +44,7 @@ const checkToken = (req: Request, res: Response, next: NextFunction) => {
     if (!token) {
         return res.status(401).send({message: 'No token provided.'});
     }
-    console.log(jwt.decode(token))
-    jwt.verify(token
-        // .replace('Bearer ', '')
+    jwt.verify(token.replace('Bearer ', '')
         , secret, (err, decoded) => {
             console.log("decoded: ", decoded)
         if (err) {
