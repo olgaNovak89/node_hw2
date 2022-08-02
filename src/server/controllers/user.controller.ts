@@ -84,11 +84,11 @@ export const user =  {
         return User
             .findOne({
             where: {
-                id: user_id
+                id: user_id,
             },
             raw: true})
             .then(userRetreived => {
-                
+
                 const userData = req.body;
                 const validatedData = schemaUser.validate(userData
                 , { abortEarly: false });
@@ -101,7 +101,7 @@ export const user =  {
                     .update(validatedData.value, {
                         where: {
                           id: user_id,
-                        }
+                        },
                       })
                     .then(() => {
                         if (!userRetreived || userRetreived.isDeleted) {

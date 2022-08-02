@@ -28,7 +28,7 @@ export const group =  {
 
     async list(req: Request, res: Response): Promise<any> {
         const {name} = req.query;
-        if (! name){
+        if (! name) {
             return res.status(404).json({message: 'Name is required'});
         }
         return Group
@@ -107,7 +107,7 @@ export const group =  {
                     .update(finalValues, {
                         where: {
                           id: group_id,
-                        }
+                        },
                       })
                     .then(() => {
                         res.status(200).json({...groupFound, ...finalValues})})
@@ -128,7 +128,7 @@ export const group =  {
         const t = await db.sequelize.transaction();
         try {
             const count = Group
-            .destroy({where: 
+            .destroy({where:
                 {id: group_id },
                 transaction: t})
             await UserToGroup.destroy({where: {
