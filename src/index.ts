@@ -1,8 +1,8 @@
-import express from 'express';
+import * as express from 'express';
 import * as path from 'path';
-import cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
-import logger from 'morgan';
+import * as logger from 'morgan';
 import * as jwt from 'jsonwebtoken';
 import * as cors from 'cors';
 import '@/models/index';
@@ -40,12 +40,10 @@ app.post('/authenticate', (req: Request, res: Response) => {
 })
 const checkToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
-    console.log(token)
     if (!token) {
         return res.status(401).send({message: 'No token provided.'});
     }
     jwt.verify(token
-        // .replace('Bearer ', '')
         , secret, (err, decoded) => {
         if (err) {
             console.log(err)
