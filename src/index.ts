@@ -3,13 +3,17 @@ import * as path from 'path';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
+import * as jwt from 'jsonwebtoken';
+import * as cors from 'cors';
 import '@/models/index';
 import usersRouter from '@/routers/user';
 import groupRouter from '@/routers/group';
 import User from '@/models/user.model';
 import { Response, Request, NextFunction } from 'express';
-import * as jwt from 'jsonwebtoken';
 export const app = express();
+
+app.use(cors())
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,7 +21,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const secret = process.env.SECRET || 'secret';
 app.post('/authenticate', (req: Request, res: Response) => {
-    console.log(req.body)
     const {login, password} = req.body;
     if (!login || !password) {
         return res.status(401).send({
@@ -37,12 +40,10 @@ app.post('/authenticate', (req: Request, res: Response) => {
 })
 const checkToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
-    console.log(token)
     if (!token) {
         return res.status(401).send({message: 'No token provided.'});
     }
     jwt.verify(token
-        // .replace('Bearer ', '')
         , secret, (err, decoded) => {
         if (err) {
             console.log(err)
