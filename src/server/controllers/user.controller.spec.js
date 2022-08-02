@@ -1,8 +1,15 @@
 const { mockRequest, mockResponse } = require('../../../__mocks__/interceptors');
 const { user } = require('./user.controller');
+const users = [{id: '10cd9047-13db-457e-bf32-884de56cd5c8', login: 'login', password: 'password', age: 33}]
+
+jest.mock('@/models/user.model', () =>({
+  create: jest.fn().mockResolvedValue(users[0]),
+  update: jest.fn().mockResolvedValue(users[0]),
+
+}))
 
 describe("Check method \'userController\' ", () => {
-  test('should 201 and return correct value', async () => {
+  test('create, should 201 and return correct value', async () => {
     let req = mockRequest({ login: "login", password: "password", age: 33 });
     const res = mockResponse();
     await user.create(req, res)
@@ -11,7 +18,7 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenLastCalledWith(201);
   });
-  test('should 400', async () => {
+  test('create, should 400', async () => {
     let req = mockRequest({ login: "login", age: 33 });
     const res = mockResponse();
     await user.create(req, res)

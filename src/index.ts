@@ -1,17 +1,18 @@
-import * as express from 'express';
+import  express from 'express';
 import * as path from 'path';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
-import * as logger from 'morgan';
+import logger from 'morgan';
 import * as jwt from 'jsonwebtoken';
-import * as cors from 'cors';
+import cors from 'cors';
 import '@/models/index';
 import usersRouter from '@/routers/user';
 import groupRouter from '@/routers/group';
 import User from '@/models/user.model';
 import { Response, Request, NextFunction } from 'express';
 export const app = express();
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 app.use(cors())
 
 app.use(logger('dev'));
@@ -35,7 +36,7 @@ app.post('/authenticate', (req: Request, res: Response) => {
         }
         const payload = { sub: user.id, login: login};
         const token = jwt.sign(payload, secret, { expiresIn: 120 });
-        return res.send({token})
+        return res.json({token})
     })
 })
 const checkToken = (req: Request, res: Response, next: NextFunction) => {
@@ -43,8 +44,11 @@ const checkToken = (req: Request, res: Response, next: NextFunction) => {
     if (!token) {
         return res.status(401).send({message: 'No token provided.'});
     }
+    console.log(jwt.decode(token))
     jwt.verify(token
+        // .replace('Bearer ', '')
         , secret, (err, decoded) => {
+            console.log("decoded: ", decoded)
         if (err) {
             console.log(err)
             return res.status(403).send({message: 'Failed to authenticate token.'});
