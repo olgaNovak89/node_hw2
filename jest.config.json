@@ -1,12 +1,15 @@
 {
     "preset": "ts-jest",
     "testRegex": "((\\.|/*.)(spec))\\.js?$",
+    "transform": {
+        "^.+\\.(ts|tsx)?$": "ts-jest",
+        "^.+\\.(js|jsx)$": "babel-jest"
+    },
     "testPathDirs": ["src"],
     "setupFiles": ["dotenv/config"],
     "testEnvironment": "node",
     "verbose": true,
     "bail": true,
-    "roots": ["<rootDir>/src"],
     "moduleDirectories": ["node_modules", "src"],
     "moduleNameMapper": {
         "@/routers/(.*)": "routers/$1",

@@ -1,7 +1,9 @@
 {
     "compileOnSave": false,
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "src/**/*.spec.js",
+        "src/**/*.test.js"
     ],
     "compilerOptions": {
         "sourceMap": true,
@@ -11,7 +13,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "es6",
-        "types": ["node"],
+        "types": ["node", "express"],
         "outDir": "dist",
         "typeRoots": [
             "node_modules/@types"

@@ -104,7 +104,7 @@ export const user =  {
                         },
                       })
                     .then(() => {
-                        if (!userRetreived || userRetreived.isDeleted) {
+                        if (!userRetreived || {...userRetreived, ...validatedData}.isDeleted) {
                             errorLogger(req, 'User not found');
                             return res.status(404).send({
                                 message: 'User Not Found',
@@ -132,8 +132,7 @@ export const user =  {
             });
         }
         const userRetreived = await User
-                .findOne({where: {id: user_id, isDeleted: false}});
-
+                .findOne({where: {id: user_id, isDeleted: false }});
         if (!userRetreived) {
             errorLogger(req, 'User not found');
             return res.status(404).send({
@@ -142,7 +141,7 @@ export const user =  {
         }
         const t = await db.sequelize.transaction();
         try {
-            User
+            const countUser  = await User
             .update(
                 {isDeleted: true},
                 {
@@ -152,6 +151,11 @@ export const user =  {
                     transaction: t,
                 },
             )
+            if (!countUser) {
+                errorLogger(req, 'User not found')
+                res.status(404).send({message: `User with ID ${user_id} not found`})
+                return t.rollback()
+            }
             await UserToGroup
             .destroy(
                 {
@@ -199,11 +203,11 @@ export const user =  {
                         ));
                     t.commit()
                 } else {
-                    errorLogger(req, 'User or group not found')
+                    errorLogger(req, 'User not found')
                     res.status(404).send({
                         message: 'User or group not found',
                     });
-                    await t.rollback();
+                    return await t.rollback();
                 }
             } catch (error) {
                 errorLogger(req, error);

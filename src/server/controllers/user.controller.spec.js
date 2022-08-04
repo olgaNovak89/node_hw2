@@ -1,15 +1,11 @@
 const { mockRequest, mockResponse } = require('../../../__mocks__/interceptors');
 const { user } = require('./user.controller');
+import User from '@/models/user.model'
 const users = [{id: '10cd9047-13db-457e-bf32-884de56cd5c8', login: 'login', password: 'password', age: 33}]
-
-jest.mock('@/models/user.model', () =>({
-  create: jest.fn().mockResolvedValue(users[0]),
-  update: jest.fn().mockResolvedValue(users[0]),
-
-}))
 
 describe("Check method \'userController\' ", () => {
   test('create, should 201 and return correct value', async () => {
+    jest.spyOn(User,'create').mockResolvedValue(users[0])
     let req = mockRequest({ login: "login", password: "password", age: 33 });
     const res = mockResponse();
     await user.create(req, res)
@@ -19,6 +15,7 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenLastCalledWith(201);
   });
   test('create, should 400', async () => {
+    jest.spyOn(User,'create').mockRejectedValue({error: 'error'})
     let req = mockRequest({ login: "login", age: 33 });
     const res = mockResponse();
     await user.create(req, res)
@@ -29,6 +26,7 @@ describe("Check method \'userController\' ", () => {
   });
 
   test('list, should 201 and return correct value', async () => {
+    jest.spyOn(User,'findAll').mockResolvedValue(users)
     let req = mockRequest({},{}, {login: "login"});
     const res = mockResponse();
     await user.list(req, res)
@@ -38,6 +36,7 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenLastCalledWith(200);
   });
   test('list, should 400', async () => {
+    jest.spyOn(User,'findAll').mockResolvedValue(undefined)
     let req = mockRequest({}, {}, {});
     const res = mockResponse();
     await user.list(req, res)
@@ -48,6 +47,7 @@ describe("Check method \'userController\' ", () => {
     
   });
   test('retreive, should 201 and return correct value', async () => {
+    jest.spyOn(User,'findOne').mockResolvedValue(user[0])
     let req = mockRequest({},
       { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
       {});
@@ -59,6 +59,7 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenLastCalledWith(200);
   });
   test('retreive, should 400', async () => {
+    jest.spyOn(User,'findOne').mockResolvedValue(undefined)
     let req = mockRequest({}, { user_id: '10cd9047-13db-457e-bf32-884de56cd5c9' }, {});
     const res = mockResponse();
     await user.retrieve(req, res)
@@ -68,51 +69,18 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenLastCalledWith(404);
   });
   test('update, should 201 and return correct value', async () => {
-    let req = mockRequest({},
+    jest.spyOn(User,'findOne').mockResolvedValue(user[0]);
+    jest.spyOn(User,'update').mockResolvedValue(user[0]);
+    let req = mockRequest({age: 77},
       { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
       {});
     const res = mockResponse();
-    await user.retrieve(req, res)
-    expect(res.json).toHaveBeenCalledTimes(1)
-    expect(res.json).toBeCalledWith({
-      "age": 33,
-      "id": "10cd9047-13db-457e-bf32-884de56cd5c8",
-      "isDeleted": false,        
-      "login": "login",
-      "password": "password",    
-      })
-      req = mockRequest(
-        {age: 43, login: "login2"},
-        { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
-        {});
-      await user.update(req, res)
-      expect(res.json).toBeCalledWith({
-        "age": 43,
-        "id": "10cd9047-13db-457e-bf32-884de56cd5c8",
-        "isDeleted": false,        
-        "login": "login2",
-        "password": "password",    
-        })
-      expect(res.status).toHaveBeenCalledTimes(2);
-      expect(res.status).toHaveBeenLastCalledWith(200);
-      req = mockRequest({age: 33, login: "login"},
-      { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
-      {});
-      await user.update(req, res)
-      req = mockRequest({},
-        { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
-        {});
-      await user.retrieve(req, res)
-      expect(res.json).toHaveBeenCalledTimes(4)
-      expect(res.json).toHaveBeenLastCalledWith({
-        "age": 33,
-        "id": "10cd9047-13db-457e-bf32-884de56cd5c8",
-        "isDeleted": false,        
-        "login": "login",
-        "password": "password",    
-        })
+    user.update(req, res)
+    expect(User.update).toBeCalledTimes(1);
+    expect(User.update).toBeCalledWith({})
   });
   test('update user, should 400', async () => {
+    jest.spyOn(User,'findOne').mockResolvedValue(undefined)
     let req = mockRequest({}, { user_id: '10cd9047-13db-457e-bf32-884de56cd5c9' }, {});
     const res = mockResponse();
     await user.update(req, res)
@@ -122,11 +90,13 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenLastCalledWith(404);
   });
   test('destroy, should 201 and return correct value', async () => {
+    jest.spyOn(User,'findOne').mockResolvedValue(user[0])
+    jest.spyOn(User,'update').mockResolvedValue(user[0]);
     let req = mockRequest({},
       { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
       {});;
     const res = mockResponse();
-    await user.destroy(req, res)
+    await user.destroy(req, res);
     expect(res.json).toHaveBeenCalledTimes(1)
     expect(res.json.mock.calls.length).toBe(1);
     expect(res.status).toHaveBeenCalledTimes(1);
@@ -138,6 +108,7 @@ describe("Check method \'userController\' ", () => {
       await user.update(req, res)
   });
   test('destroy, should 400', async () => {
+    jest.spyOn(User,'findOne').mockResolvedValue(undefined)
     let req = mockRequest({}, { user_id: "10cd9047-13db-457e-bf32-884de56cd5c9" }, {});
     const res = mockResponse();
     await user.destroy(req, res)

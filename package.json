@@ -8,7 +8,8 @@
     "migrate": "npm run build && npx sequelize-cli-typescript db:migrate",
     "migrate:test": "npm run build && npx sequelize-cli-typescript db:migrate --env test",
     "start": "npm run build && concurrently --kill-others \"tsc -w -p src\" \"nodemon --require ts-node/register --require tsconfig-paths/register dist/www.js -e ts\"",
-    "test": "jest --config ./jest.config.json"
+    "test": "jest --config ./jest.config.json",
+    "clear_jest": "jest --clearCache"
   },
   "moduleNameMapper": {
     "^@/routers/(.*)": "<rootDir>/dist/routers/*",
@@ -36,7 +37,7 @@
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
+    "@babel/preset-env": "^7.18.10",
     "@babel/preset-typescript": "^7.16.7",
     "@types/body-parser": "^1.19.2",
     "@types/cookie-parser": "^1.4.3",
@@ -54,6 +55,7 @@
     "@types/validator": "^13.7.3",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
+    "babel-jest": "^28.1.3",
     "babel-plugin-module-resolver": "^4.1.0",
     "concurrently": "^7.2.1",
     "eslint": "^8.17.0",

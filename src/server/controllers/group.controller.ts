@@ -127,7 +127,7 @@ export const group =  {
         const { group_id } = req.params;
         const t = await db.sequelize.transaction();
         try {
-            const count = Group
+            const count = await Group
             .destroy({where:
                 {id: group_id },
                 transaction: t})
@@ -137,8 +137,9 @@ export const group =  {
             }, transaction: t})
             await t.commit();
             if (!count) {
+                await t.rollback();
                 errorLogger(req, 'Group not found')
-                res.status(404).send({message: `Group with ID ${group_id} not found`})
+                return res.status(404).send({message: `Group with ID ${group_id} not found`})
             }
             res.status(200).json({message: `Group ${group_id} is deleted`})
         } catch (error) {

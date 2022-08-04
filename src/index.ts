@@ -46,12 +46,11 @@ const checkToken = (req: Request, res: Response, next: NextFunction) => {
     }
     jwt.verify(token.replace('Bearer ', '')
         , secret, (err, decoded) => {
-            console.log("decoded: ", decoded)
-        if (err) {
+            if (err) {
             console.log(err)
             return res.status(403).send({message: 'Failed to authenticate token.'});
         }
-        return next();
+            return next();
     })
 };
 
