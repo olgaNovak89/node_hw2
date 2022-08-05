@@ -1,6 +1,8 @@
 const { mockRequest, mockResponse } = require('../../../__mocks__/interceptors');
 const { group } = require('./group.controller');
 import Group from '@/models/group.model'
+import UserToGroup from '@/models/user_to_group.model'
+
  const mockGroups = [{ id: '7ea53eb2-f9ad-44af-8e1f-0d4011bb830e', name: 'name', permissions: ['READ']}]
 describe("Check method \'groupController\' ", () => {
   test('should 201 and return correct value', async () => {
@@ -122,6 +124,7 @@ describe("Check method \'groupController\' ", () => {
   test('destroy, should 201 and return correct value', async () => {
     jest.spyOn(Group,'findOne').mockResolvedValue(mockGroups[0])
     jest.spyOn(Group,'destroy').mockResolvedValue({status: 'ok'})
+    jest.spyOn(UserToGroup, 'destroy').mockResolvedValue(10)
     let req = mockRequest({},
       { group_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
       {});;
@@ -131,14 +134,9 @@ describe("Check method \'groupController\' ", () => {
     expect(res.json.mock.calls.length).toBe(1);
     expect(res.status).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenLastCalledWith(200);
-    req = mockRequest(
-        {isDeleted: false},
-        { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
-        {});
-      await user.update(req, res)
   });
   test('destroy, should 400', async () => {
-    jest.spyOn(Group,'findOne').mockResolvedValue(undefined)
+    jest.spyOn(Group,'destroy').mockResolvedValue(0)
     let req = mockRequest({}, { group_id: "10cd9047-13db-457e-bf32-884de56cd5c9" }, {});
     const res = mockResponse();
     await group.destroy(req, res)

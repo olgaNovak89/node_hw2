@@ -19,10 +19,10 @@ export const group =  {
         } else {
             return Group
             .create(validatedData.value)
-            .then(user => res.status(201).send({message: 'New group is created', user}))
+            .then(group => res.status(201).send({message: 'New group is created', group}))
             .catch(error => {
                 errorLogger(req, error)
-                res.status(400).send({error: {user: validatedData.value, message: 'Error happened', ...error}})});
+                res.status(400).send({error: {group: validatedData.value, message: 'Error happened', ...error}})});
         }
     },
 
@@ -135,13 +135,14 @@ export const group =  {
                 groupId: group_id,
 
             }, transaction: t})
-            await t.commit();
+            
             if (!count) {
                 await t.rollback();
                 errorLogger(req, 'Group not found')
                 return res.status(404).send({message: `Group with ID ${group_id} not found`})
             }
             res.status(200).json({message: `Group ${group_id} is deleted`})
+            await t.commit();
         } catch (error) {
             await t.rollback();
             errorLogger(req, error)

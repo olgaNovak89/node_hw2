@@ -133,10 +133,12 @@ export const user =  {
         }
         const userRetreived = await User
                 .findOne({where: {id: user_id, isDeleted: false }});
+
         if (!userRetreived) {
             errorLogger(req, 'User not found');
             return res.status(404).send({
                 message: 'User Not Found',
+                user: userRetreived
             });
         }
         const t = await db.sequelize.transaction();

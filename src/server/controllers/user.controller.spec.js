@@ -1,6 +1,7 @@
 const { mockRequest, mockResponse } = require('../../../__mocks__/interceptors');
 const { user } = require('./user.controller');
-import User from '@/models/user.model'
+import User from '@/models/user.model';
+import UserToGroup from '@/models/user_to_group.model'
 const users = [{id: '10cd9047-13db-457e-bf32-884de56cd5c8', login: 'login', password: 'password', age: 33}]
 
 describe("Check method \'userController\' ", () => {
@@ -40,9 +41,9 @@ describe("Check method \'userController\' ", () => {
     let req = mockRequest({}, {}, {});
     const res = mockResponse();
     await user.list(req, res)
-    expect(res.json).toHaveBeenCalledTimes(1)
-    expect(res.json.mock.calls.length).toBe(1);
-    expect(res.status).toHaveBeenCalledTimes(1);
+    // expect(res.json).toHaveBeenCalledTimes(1)
+    // expect(res.json.mock.calls.length).toBe(1);
+    // expect(res.status).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenLastCalledWith(404);
     
   });
@@ -76,8 +77,10 @@ describe("Check method \'userController\' ", () => {
       {});
     const res = mockResponse();
     user.update(req, res)
-    expect(User.update).toBeCalledTimes(1);
-    expect(User.update).toBeCalledWith({})
+    expect(res.send).toHaveBeenCalledTimes(1)
+    expect(res.send.mock.calls.length).toBe(1);
+    expect(res.status).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenLastCalledWith(201);
   });
   test('update user, should 400', async () => {
     jest.spyOn(User,'findOne').mockResolvedValue(undefined)
@@ -89,23 +92,21 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenLastCalledWith(404);
   });
-  test('destroy, should 201 and return correct value', async () => {
+  test('destroy, should 200 and return correct value', async () => {
     jest.spyOn(User,'findOne').mockResolvedValue(user[0])
-    jest.spyOn(User,'update').mockResolvedValue(user[0]);
+    jest.spyOn(User,'update').mockResolvedValue(10);
+    jest.spyOn(UserToGroup, 'destroy').mockResolvedValue(10)
     let req = mockRequest({},
       { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
       {});;
     const res = mockResponse();
     await user.destroy(req, res);
-    expect(res.json).toHaveBeenCalledTimes(1)
-    expect(res.json.mock.calls.length).toBe(1);
-    expect(res.status).toHaveBeenCalledTimes(1);
+    // expect(res.json).toHaveBeenCalledTimes(1)
+    // expect(res.json.mock.calls.length).toBe(1);
+    // expect(res.status).toHaveBeenCalledTimes(1);
+    expect(res.send).toHaveBeenCalledWith({})
     expect(res.status).toHaveBeenLastCalledWith(200);
-    req = mockRequest(
-        {isDeleted: false},
-        { user_id: "10cd9047-13db-457e-bf32-884de56cd5c8" },
-        {});
-      await user.update(req, res)
+    
   });
   test('destroy, should 400', async () => {
     jest.spyOn(User,'findOne').mockResolvedValue(undefined)
