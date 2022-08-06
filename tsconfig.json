@@ -2,8 +2,7 @@
     "compileOnSave": false,
     "exclude": [
         "node_modules",
-        "src/**/*.spec.js",
-        "src/**/*.test.js"
+        "src/**/*.spec.ts"
     ],
     "compilerOptions": {
         "sourceMap": true,
@@ -13,7 +12,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "es6",
-        "types": ["node", "express"],
+        "types": ["node", "express", "jest"],
         "outDir": "dist",
         "typeRoots": [
             "node_modules/@types"

@@ -1,12 +1,42 @@
-const { mockRequest, mockResponse } = require('../../../__mocks__/interceptors');
-const { user } = require('./user.controller');
+import { mockRequest, mockResponse } from '../../../__mocks__/interceptors';
+import { user } from './user.controller';
 import User from '@/models/user.model';
-import UserToGroup from '@/models/user_to_group.model'
-const users = [{id: '10cd9047-13db-457e-bf32-884de56cd5c8', login: 'login', password: 'password', age: 33}]
+import UserToGroup from '@/models/user_to_group.model';
+import { schemaUser, schemaUserToGroup } from '@/schema';
+const users = [{id: '10cd9047-13db-457e-bf32-884de56cd5c8', login: 'login', password: 'password', age: 33}, {id: '10cd9047-13db-457e-bf32-884de56cd5c7', login: 'login2', password: 'password2', age: 34}]
 
 describe("Check method \'userController\' ", () => {
+  jest.mock('@/models/user.model', ()=>({
+    create: jest.fn(),
+    update: jest.fn(),
+    findOne: jest.fn(),
+    findAll: jest.fn()
+  }))
+  jest.mock('@/models/user_to_group.model', ()=>({
+    create: jest.fn(),
+    update: jest.fn(),
+    findOne: jest.fn(),
+    findAll: jest.fn(),
+    destroy: jest.fn()
+  }))
+  jest.mock('@/schema', ()=>({
+    schemaUser: {
+      validate: jest.fn()
+    },
+    schemaUserToGroup: {
+      validate: jest.fn()
+    }
+  }))
+  const mockT = jest.fn()
+  jest.mock('../models', ()=>({
+    sequelize: () => ({
+      sequelize: {transaction: () => mockT}
+    })
+  }))
   test('create, should 201 and return correct value', async () => {
-    jest.spyOn(User,'create').mockResolvedValue(users[0])
+    console.log(User)
+    User.create.mockResolvedValue(users[0])
+    schemaUser.validate.mockResolvedValue({value: users[0]})
     let req = mockRequest({ login: "login", password: "password", age: 33 });
     const res = mockResponse();
     await user.create(req, res)
@@ -16,7 +46,7 @@ describe("Check method \'userController\' ", () => {
     expect(res.status).toHaveBeenLastCalledWith(201);
   });
   test('create, should 400', async () => {
-    jest.spyOn(User,'create').mockRejectedValue({error: 'error'})
+    User.create.mockRejectedValue({error: 'error'})
     let req = mockRequest({ login: "login", age: 33 });
     const res = mockResponse();
     await user.create(req, res)
