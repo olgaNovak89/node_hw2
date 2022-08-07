@@ -9,7 +9,7 @@ import UserToGroup from '@/models/user_to_group.model';
 import User from '@/models/user.model';
 import { errorLogger, logger } from '@/tools';
 
-export const group =  {
+export const group = {
     async create(req: Request, res: Response): Promise<any> {
         const groupData = req.body;
         const validatedData = schemaGroup.validate({...groupData }, { abortEarly: false });
@@ -135,7 +135,7 @@ export const group =  {
                 groupId: group_id,
 
             }, transaction: t})
-            
+
             if (!count) {
                 await t.rollback();
                 errorLogger(req, 'Group not found')

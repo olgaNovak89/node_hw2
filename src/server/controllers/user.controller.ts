@@ -88,13 +88,13 @@ export const user =  {
             },
             raw: true})
             .then(userRetreived => {
-
                 const userData = req.body;
                 const validatedData = schemaUser.validate(userData
                 , { abortEarly: false });
                 if (validatedData.error) {
                     errorLogger(req, validatedData.error);
-                    return res.status(404).json(validatedData.error);
+                    res.status(404).json(validatedData.error);
+                    return 
                 } else {
 
                 return User
@@ -104,13 +104,16 @@ export const user =  {
                         },
                       })
                     .then(() => {
-                        if (!userRetreived || {...userRetreived, ...validatedData}.isDeleted) {
+                        if (!userRetreived || 
+                            {...userRetreived, ...validatedData.value}.isDeleted
+                        ) {
                             errorLogger(req, 'User not found');
                             return res.status(404).send({
                                 message: 'User Not Found',
                             });
                         }
-                        res.status(200).json({...userRetreived, ...validatedData.value})})
+                        res.status(201).json({...userRetreived, ...validatedData.value})
+                    })
                     .catch((error) => {
                         errorLogger(req, error);
                         res.status(400).send(error);
@@ -138,7 +141,7 @@ export const user =  {
             errorLogger(req, 'User not found');
             return res.status(404).send({
                 message: 'User Not Found',
-                user: userRetreived
+                user: userRetreived,
             });
         }
         const t = await db.sequelize.transaction();
