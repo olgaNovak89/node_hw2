@@ -3,8 +3,33 @@ const { group } = require('./group.controller');
 import Group from '@/models/group.model'
 import UserToGroup from '@/models/user_to_group.model'
 
- const mockGroups = [{ id: '7ea53eb2-f9ad-44af-8e1f-0d4011bb830e', name: 'name', permissions: ['READ']}]
-describe("Check method \'groupController\' ", () => {
+const mockGroups = [
+  { id: '7ea53eb2-f9ad-44af-8e1f-0d4011bb830e', name: 'name', permissions: ['READ']},
+  { id: '7ea53eb2-f9ad-44af-8e1f-0d4011bb830f', name: 'name2', permissions: ['WRITE']}
+];
+ jest.mock('@/config', () => ({
+  usersSearchLimit: 5
+}))
+jest.mock('@/models/user_to_group.model', ()=>({
+  destroy: jest.fn().mockResolvedValue(10)
+}))
+jest.mock('@/schema', ()=>({
+  schemaGroup: {
+    validate: jest.fn().mockReturnValue({value: mockGroups[0]})
+  },
+  schemaUserToGroup: {
+    validate: jest.fn().mockReturnValue({})
+  }
+}))
+const mockT = {
+  commit: jest.fn(),
+  rollback: jest.fn()
+}
+jest.mock('../models', ()=>({
+    sequelize: {
+      transaction: () => (mockT)}
+}))
+ describe("Check method \'groupController\' ", () => {
   test('should 201 and return correct value', async () => {
     jest.spyOn(Group,'create').mockResolvedValue(mockGroups[0])
     let req = mockRequest({ name: 'name', permissions: ['READ'] });

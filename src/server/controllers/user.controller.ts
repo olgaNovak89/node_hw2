@@ -93,10 +93,16 @@ export const user =  {
                 , { abortEarly: false });
                 if (validatedData.error) {
                     errorLogger(req, validatedData.error);
-                    res.status(404).json(validatedData.error);
-                    return 
+                    res.status(404).json(validatedData.error); 
+                    return  
                 } else {
-
+                if (!userRetreived) {
+                    errorLogger(req, 'User not found');
+                    res.status(404).send({
+                        message: 'User Not Found',
+                    });
+                    return
+                }
                 return User
                     .update(validatedData.value, {
                         where: {
@@ -104,15 +110,8 @@ export const user =  {
                         },
                       })
                     .then(() => {
-                        if (!userRetreived || 
-                            {...userRetreived, ...validatedData.value}.isDeleted
-                        ) {
-                            errorLogger(req, 'User not found');
-                            return res.status(404).send({
-                                message: 'User Not Found',
-                            });
-                        }
-                        res.status(201).json({...userRetreived, ...validatedData.value})
+                        const newUser = {...userRetreived, ...validatedData.value};
+                        res.status(201).json(newUser)
                     })
                     .catch((error) => {
                         errorLogger(req, error);
