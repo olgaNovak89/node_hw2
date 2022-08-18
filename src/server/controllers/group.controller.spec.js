@@ -13,14 +13,16 @@ const mockGroups = [
 jest.mock('@/models/user_to_group.model', ()=>({
   destroy: jest.fn().mockResolvedValue(10)
 }))
-jest.mock('@/schema', ()=>({
+jest.mock('@/schema', ()=>{ 
+  const singleGroup = { id: '7ea53eb2-f9ad-44af-8e1f-0d4011bb830e', name: 'name', permissions: ['READ']};
+  return {
   schemaGroup: {
-    validate: jest.fn().mockReturnValue({value: mockGroups[0]})
+    validate: jest.fn().mockImplementation((input)=> ({value: input}))
   },
   schemaUserToGroup: {
     validate: jest.fn().mockReturnValue({})
   }
-}))
+}})
 const mockT = {
   commit: jest.fn(),
   rollback: jest.fn()
@@ -97,43 +99,19 @@ jest.mock('../models', ()=>({
   test('update, should 201 and return correct value', async () => {
     jest.spyOn(Group,'findOne').mockResolvedValue(mockGroups[0])
     jest.spyOn(Group,'update').mockResolvedValue({...mockGroups[0], name: "name2"})
-    let req = mockRequest({},
+    let req = mockRequest({name: "name2"},
       { group_id: "7ea53eb2-f9ad-44af-8e1f-0d4011bb830e" },
       {});
     const res = mockResponse();
-    await group.retrieve(req, res)
-    expect(res.json).toHaveBeenCalledTimes(1)
-    expect(res.json).toBeCalledWith({
-      "name": "name",
-      "permissions": ["READ"],
-      "id": "7ea53eb2-f9ad-44af-8e1f-0d4011bb830e"    
-      })
       req = mockRequest(
         {name: "name2"},
         { group_id: "7ea53eb2-f9ad-44af-8e1f-0d4011bb830e" },
         {});
       await group.update(req, res)
-      expect(res.json).toBeCalledWith({
+      expect(res.json).toHaveBeenLastCalledWith({
         "name": "name2",
       "permissions": ["READ"],
       "id": "7ea53eb2-f9ad-44af-8e1f-0d4011bb830e"    
-        })
-      expect(res.status).toHaveBeenCalledTimes(2);
-      expect(res.status).toHaveBeenLastCalledWith(200);
-      req = mockRequest(
-        {name: "name"},
-        { group_id: "7ea53eb2-f9ad-44af-8e1f-0d4011bb830e" },
-        {});
-      await group.update(req, res)
-      req = mockRequest({},
-        { group_id: "7ea53eb2-f9ad-44af-8e1f-0d4011bb830e" },
-        {});
-      await group.retrieve(req, res)
-      expect(res.json).toHaveBeenCalledTimes(4)
-      expect(res.json).toHaveBeenLastCalledWith({
-        "name": "name",
-      "permissions": ["READ"],
-      "id": "7ea53eb2-f9ad-44af-8e1f-0d4011bb830e" 
         })
   });
   test('update group, should 400', async () => {
